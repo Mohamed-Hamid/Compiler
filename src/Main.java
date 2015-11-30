@@ -99,7 +99,37 @@ public class Main {
 						token = lineTokens.get(i);
 						if (token.length() == 1
 								&& separators.contains(token.charAt(0))) { // operator
-							
+							char operator = token.charAt(0);
+							// TC
+							if (operator == ' ') {
+								throw new Exception(
+										"CANNOT BE A SPACE AS OPERATOR!");
+							} else if (operator == '-') {
+								char begin = lineTokens.get(i - 1).charAt(0), end = lineTokens
+										.get(i + 1).charAt(0);
+								i++;
+								operands.pop();
+								char index = (char) (begin + 1);
+								// NFA tempNFA = NFA(begin.toString());
+								while (index <= end) {
+									// NFA indexNFA = NFA(index.toString());
+									// tempNFA = NFAor(tempNFA, indexNFA);
+									// index = (char) (index + 1);
+								}
+								// operands.push(tempNFA);
+							} else if (operator == '*') {
+								// NFA tempNFA= operands.pop();
+								// operands.push(NFAkleene(tempNFA));
+							} else if (operator == '+') {
+								// NFA tempNFA= operands.pop();
+								// operands.push(NFAplus(tempNFA));
+							} else {
+								if( operators.isEmpty() || operators.peek() == '(' ){
+									operators.push(operator);
+								}
+							}
+
+							System.out.println("or: " + token);
 						} else { // operand
 							System.out.println("od: " + token);
 							// TC
