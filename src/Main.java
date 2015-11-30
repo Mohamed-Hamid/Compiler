@@ -116,9 +116,63 @@ public class Main {
 								// NFA tempNFA= operands.pop();
 								// operands.push(NFAplus(tempNFA));
 							} else {
-								if (operators.isEmpty()
-										|| operators.peek() == '(') {
+								// operators: | ( ) .
+								if (operator == ')') {
+									Character poppedOperator = operators.pop();
+									while (poppedOperator != '(') {
+										if (poppedOperator == '|') {
+											// TC
+											// NFA firstOperandNFA =
+											// operands.pop();
+											// NFA secondOperandNFA =
+											// operands.pop();
+											// NFA resultNFA =
+											// NFAor(firstOperandNFA,
+											// secondOperandNFA);
+											// operands.push(resultNFA);
+										}
+										poppedOperator = operators.pop();
+									}
+
+									if (operators.peek() == '.') {
+										// operand ( case
+										// operators.pop()
+										// NFA firstOperandNFA = operands.pop();
+										// NFA secondOperandNFA =
+										// operands.pop();
+										// NFA resultNFA =
+										// NFAconcat(firstOperandNFA,
+										// secondOperandNFA);
+										// operands.push(resultNFA);
+									}
+								} else if (operators.isEmpty()
+										|| operators.peek() == '('
+										|| operator == '(') { // | (
 									operators.push(operator);
+								}
+							}
+
+							if (i + 1 < lineTokens.size()) {
+								String nextToken = lineTokens.get(i + 1);
+								// Check for concatenation after
+								// + * )
+								if (operator == '+' || operator == '*'
+										|| operator == ')') {
+									if (!isOperator(nextToken)) {
+										System.out.println("CONCAT2: "
+												+ nextToken);
+										// TC
+										// nextOperandNFA =
+										// getOperandNFA(nextToken)
+										// NFA resultNFA = NFAconcat(operandNFA,
+										// nextOperandNFA);
+										// operands.pop();
+										// operands.push(resultNFA);
+									}
+								} else if (nextToken.equals("(")
+										&& (operator == '+' || operator == '*')) {
+									// Check for concatenation before (
+
 								}
 							}
 
@@ -134,7 +188,7 @@ public class Main {
 							if (i + 1 < lineTokens.size()) {
 								String nextToken = lineTokens.get(i + 1);
 								if (!isOperator(nextToken)) {
-									// System.out.println("CONCAT: " +
+									// System.out.println("CONCAT1: " +
 									// nextToken);
 									// TC
 									// nextOperandNFA = getOperandNFA(nextToken)
@@ -142,6 +196,11 @@ public class Main {
 									// nextOperandNFA);
 									// operands.pop();
 									// operands.push(resultNFA);
+								} else if (nextToken.equals("(")) {
+									System.out.println("CONCAT3: " + nextToken);
+									// TC
+									// operators.push('.');
+
 								}
 							}
 						}
