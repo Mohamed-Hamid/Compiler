@@ -28,14 +28,10 @@ public class Main {
 		try (BufferedReader br = new BufferedReader(
 				new FileReader(
 						"C:\\Users\\electric\\Dropbox\\College\\Term 9\\Programming Languages Translation\\Project phase 1\\rules.txt"))) {
-			// StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
-
-			// sb.append(line);
-			// sb.append(System.lineSeparator());
-			// line = br.readLine();
 			while (line != null) {
-
+				// Read line, separate on four cases { , [ , expression,
+				// definition
 				if (line.charAt(0) == '{') {
 					for (String token : line.substring(1, line.length() - 1)
 							.trim().split(" ")) {
@@ -78,13 +74,10 @@ public class Main {
 						if (currentChar == ' ') {
 							continue;
 						} else {
-							// if (currentChar == '\\' && nextChar != 'L') {
-							// continue;
-							// } else {
 							tempChars.append(currentChar);
-							// }
+							char prevChar = i1 > 0 ? line.charAt(i1 - 1) : ' ';
 							if ((separators.contains(nextChar) && currentChar != '\\')
-									|| separators.contains(currentChar)) {
+									|| (separators.contains(currentChar) && prevChar != '\\')) {
 								lineTokens.add(tempChars.toString());
 								// System.out.println(tempChars);
 								tempChars = new StringBuilder();
@@ -107,13 +100,13 @@ public class Main {
 								char begin = lineTokens.get(i - 1).charAt(0), end = lineTokens
 										.get(i + 1).charAt(0);
 								i++;
-//								operands.pop();
+								// operands.pop();
 								char index = (char) (begin + 1);
 								// NFA tempNFA = NFA(begin.toString());
 								while (index <= end) {
 									// NFA indexNFA = NFA(index.toString());
 									// tempNFA = NFAor(tempNFA, indexNFA);
-									 index = (char) (index + 1);
+									index = (char) (index + 1);
 								}
 								// operands.push(tempNFA);
 							} else if (operator == '*') {
@@ -129,9 +122,9 @@ public class Main {
 								}
 							}
 
-							//System.out.println("or: " + token);
+							// System.out.println("or: " + token);
 						} else { // operand
-							//System.out.println("od: " + token);
+							// System.out.println("od: " + token);
 							// TC
 							// NFA operandNFA = getOperandNFA(token);
 							// operands.push(operandNFA);
@@ -141,7 +134,8 @@ public class Main {
 							if (i + 1 < lineTokens.size()) {
 								String nextToken = lineTokens.get(i + 1);
 								if (!isOperator(nextToken)) {
-									System.out.println("CONCAT: " + nextToken);
+									// System.out.println("CONCAT: " +
+									// nextToken);
 									// TC
 									// nextOperandNFA = getOperandNFA(nextToken)
 									// NFA resultNFA = NFAconcat(operandNFA,
@@ -153,14 +147,11 @@ public class Main {
 						}
 					}
 				}
-				// sb.append(line);
-				// sb.append(System.lineSeparator());
 				line = br.readLine();
 			}
 			// for(String key: symbolTable.keySet()){
 			// System.out.println(key + " => " + symbolTable.get(key));
 			// }
-			// String everything = sb.toString();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
