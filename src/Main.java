@@ -97,8 +97,7 @@ public class Main {
 					String token;
 					for (int i = 0; i < lineTokens.size(); i++) {
 						token = lineTokens.get(i);
-						if (token.length() == 1
-								&& separators.contains(token.charAt(0))) { // operator
+						if (isOperator(token)) { // operator
 							char operator = token.charAt(0);
 							// TC
 							if (operator == ' ') {
@@ -108,13 +107,13 @@ public class Main {
 								char begin = lineTokens.get(i - 1).charAt(0), end = lineTokens
 										.get(i + 1).charAt(0);
 								i++;
-								operands.pop();
+//								operands.pop();
 								char index = (char) (begin + 1);
 								// NFA tempNFA = NFA(begin.toString());
 								while (index <= end) {
 									// NFA indexNFA = NFA(index.toString());
 									// tempNFA = NFAor(tempNFA, indexNFA);
-									// index = (char) (index + 1);
+									 index = (char) (index + 1);
 								}
 								// operands.push(tempNFA);
 							} else if (operator == '*') {
@@ -124,24 +123,33 @@ public class Main {
 								// NFA tempNFA= operands.pop();
 								// operands.push(NFAplus(tempNFA));
 							} else {
-								if( operators.isEmpty() || operators.peek() == '(' ){
+								if (operators.isEmpty()
+										|| operators.peek() == '(') {
 									operators.push(operator);
 								}
 							}
 
-							System.out.println("or: " + token);
+							//System.out.println("or: " + token);
 						} else { // operand
-							System.out.println("od: " + token);
+							//System.out.println("od: " + token);
 							// TC
-							// NFA operandNFA;
-							if (definitions.containsKey(token)) {
-								// operandNFA = definitions.get(token);
-							} else {
-								// Change operand to a NFA
-								// operandNFA = NFA(token);
-							}
+							// NFA operandNFA = getOperandNFA(token);
 							// operands.push(operandNFA);
 
+							// Check for concatenation operator after the
+							// operand
+							if (i + 1 < lineTokens.size()) {
+								String nextToken = lineTokens.get(i + 1);
+								if (!isOperator(nextToken)) {
+									System.out.println("CONCAT: " + nextToken);
+									// TC
+									// nextOperandNFA = getOperandNFA(nextToken)
+									// NFA resultNFA = NFAconcat(operandNFA,
+									// nextOperandNFA);
+									// operands.pop();
+									// operands.push(resultNFA);
+								}
+							}
 						}
 					}
 				}
@@ -160,5 +168,23 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private static boolean isOperator(String token) {
+		return token.length() == 1 && separators.contains(token.charAt(0));
+	}
+
+	// TC change boolean to NFA
+	private static boolean getOperandNFA(String token) {
+		// NFA operandNFA;
+		if (definitions.containsKey(token)) {
+			// operandNFA = definitions.get(token);
+		} else {
+			// Change operand to a NFA
+			// operandNFA = NFA(token);
+		}
+		// return operandNFA
+		return true;
+
 	}
 }
