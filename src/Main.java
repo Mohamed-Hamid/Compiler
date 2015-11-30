@@ -13,14 +13,17 @@ import java.util.Stack;
 
 public class Main {
 	private static HashMap<String, String> symbolTable;
-	private Stack<Double> operands = new Stack<>();
-	private Stack<Character> operators = new Stack<>();
+	private static Stack<Double> operands = new Stack<Double>();
+	private static Stack<Character> operators = new Stack<Character>();
 	private static Character[] seps = { ' ', '-', '|', '+', '*', '(', ')' };
 	private static ArrayList<Character> separators = new ArrayList<Character>(
 			Arrays.asList(seps));
-	private static Set<String> definitions = new HashSet<String>();
+	private static HashMap<String, Double> definitions = new HashMap<String, Double>(); // TC
+																						// Double
+																						// =>
+																						// NFA
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		symbolTable = new HashMap<String, String>();
 		try (BufferedReader br = new BufferedReader(
 				new FileReader(
@@ -56,8 +59,8 @@ public class Main {
 						isDefinition = false;
 					}
 					if (isDefinition) {
-						definitions.add(line.substring(0, line.indexOf('='))
-								.trim());
+						definitions.put(line.substring(0, line.indexOf('='))
+								.trim(), 1.0);
 						// System.out.println(line.substring(0,
 						// line.indexOf('=')).trim() + "=");
 						line = line.substring(line.indexOf('=') + 1);
@@ -89,6 +92,28 @@ public class Main {
 						}
 					}
 					System.out.println(lineTokens);
+
+					// Parse tokens with precedence
+					String token;
+					for (int i = 0; i < lineTokens.size(); i++) {
+						token = lineTokens.get(i);
+						if (token.length() == 1
+								&& separators.contains(token.charAt(0))) { // operator
+							
+						} else { // operand
+							System.out.println("od: " + token);
+							// TC
+							// NFA operandNFA;
+							if (definitions.containsKey(token)) {
+								// operandNFA = definitions.get(token);
+							} else {
+								// Change operand to a NFA
+								// operandNFA = NFA(token);
+							}
+							// operands.push(operandNFA);
+
+						}
+					}
 				}
 				// sb.append(line);
 				// sb.append(System.lineSeparator());
