@@ -19,7 +19,6 @@ public class Main {
 	private static ArrayList<Character> separators = new ArrayList<Character>(
 			Arrays.asList(seps));
 	private static Set<String> definitions = new HashSet<String>();
-	private static ArrayList<String> lineTokens = new ArrayList<String>();
 
 	public static void main(String[] args) {
 		symbolTable = new HashMap<String, String>();
@@ -57,14 +56,17 @@ public class Main {
 						isDefinition = false;
 					}
 					if (isDefinition) {
-						definitions.add(line.substring(0, line.indexOf('=')).trim());
-//						System.out.println(line.substring(0, line.indexOf('=')).trim() + "=");
+						definitions.add(line.substring(0, line.indexOf('='))
+								.trim());
+						// System.out.println(line.substring(0,
+						// line.indexOf('=')).trim() + "=");
 						line = line.substring(line.indexOf('=') + 1);
 					} else {
 						line = line.substring(line.indexOf(':') + 1);
 					}
-					
+
 					// Tokenize line, separate on operators or space
+					ArrayList<String> lineTokens = new ArrayList<String>();
 					StringBuilder tempChars = new StringBuilder();
 					for (int i1 = 0, i2 = 1; i1 < line.length(); i1++, i2++) {
 						char currentChar = line.charAt(i1);
@@ -73,21 +75,20 @@ public class Main {
 						if (currentChar == ' ') {
 							continue;
 						} else {
-							if (currentChar == '\\' && nextChar != 'L') {
-								continue;
-							} else {
-								tempChars.append(currentChar);
-							}
-							if (separators.contains(nextChar)
+							// if (currentChar == '\\' && nextChar != 'L') {
+							// continue;
+							// } else {
+							tempChars.append(currentChar);
+							// }
+							if ((separators.contains(nextChar) && currentChar != '\\')
 									|| separators.contains(currentChar)) {
 								lineTokens.add(tempChars.toString());
-//								System.out.println(tempChars);
+								// System.out.println(tempChars);
 								tempChars = new StringBuilder();
-							} else {
-
 							}
 						}
 					}
+					System.out.println(lineTokens);
 				}
 				// sb.append(line);
 				// sb.append(System.lineSeparator());
