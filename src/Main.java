@@ -145,11 +145,22 @@ public class Main {
 										// secondOperandNFA);
 										// operands.push(resultNFA);
 									}
-									// HERE
 								} else if (operators.isEmpty()
 										|| operators.peek() == '('
 										|| operator == '(') { // | (
 									operators.push(operator);
+								} else if (operator == '|'
+										&& operators.peek() == '|') {
+									// TC
+									// NFA firstOperandNFA =
+									// operands.pop();
+									// NFA secondOperandNFA =
+									// operands.pop();
+									// NFA resultNFA =
+									// NFAor(firstOperandNFA,
+									// secondOperandNFA);
+									// operands.push(resultNFA);
+									// operators.push('|');
 								}
 							}
 
@@ -187,7 +198,9 @@ public class Main {
 							if (i + 1 < lineTokens.size()) {
 								String nextToken = lineTokens.get(i + 1);
 								if (!isOperator(nextToken)) {
-									System.out.println("CONCAT case operand.operand: " + nextToken);
+									System.out
+											.println("CONCAT case operand.operand: "
+													+ nextToken);
 									// TC
 									// nextOperandNFA = getOperandNFA(nextToken)
 									// NFA resultNFA = NFAconcat(operandNFA,
@@ -195,7 +208,9 @@ public class Main {
 									// operands.pop();
 									// operands.push(resultNFA);
 								} else if (nextToken.equals("(")) {
-									System.out.println("CONCAT case operand.(: " + nextToken);
+									System.out
+											.println("CONCAT case operand.(: "
+													+ nextToken);
 									// TC
 									// operators.push('.');
 
