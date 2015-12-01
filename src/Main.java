@@ -19,10 +19,7 @@ public class Main {
 	private static Stack<Character> operators;
 	private static Character[] seps = { ' ', '-', '|', '+', '*', '(', ')' };
 	private static ArrayList<Character> separators = new ArrayList<Character>(Arrays.asList(seps));
-	private static HashMap<String, NFA> definitions = new HashMap<String, NFA>(); // TC
-																					// Double
-																					// =>
-																					// NFA
+	private static HashMap<String, NFA> definitions = new HashMap<String, NFA>();
 
 	public static void main(String[] args) throws Exception {
 		symbolTable = new HashMap<String, String>();
@@ -34,7 +31,7 @@ public class Main {
 				if (line.charAt(0) == '{') {
 					for (String token : line.substring(1, line.length() - 1).trim().split(" ")) {
 						// System.out.println("==="+ token+"===");
-						// NFA concatenation of chars
+						// CHANGE: NFA concatenation of chars
 					}
 				} else if (line.charAt(0) == '[') {
 					for (int i = 1; i < line.length() - 1; i++) {
@@ -53,8 +50,7 @@ public class Main {
 					}
 					if (isDefinition) {
 						definitionLHS = line.substring(0, line.indexOf('=')).trim();
-						// System.out.println(line.substring(0,
-						// line.indexOf('=')).trim() + "=");
+						// System.out.println(line.substring(0, line.indexOf('=')).trim() + "=");
 						line = line.substring(line.indexOf('=') + 1);
 					} else {
 						line = line.substring(line.indexOf(':') + 1);
@@ -91,16 +87,15 @@ public class Main {
 							if (operator == ' ') {
 								throw new Exception("CANNOT BE A SPACE AS OPERATOR!");
 							} else if (operator == '-') {
-								// specially treated operator, no precedence
-								// rules, may be implemented in a neat way later
+								// specially treated operator, no precedence rules, may be implemented in a neat way later
 								char begin = lineTokens.get(i - 1).charAt(0), end = lineTokens.get(i + 1).charAt(0);
 								i++;
 								// operands.pop();
 								char index = (char) (begin + 1);
-								// NFA tempNFA = NFA(begin.toString());
+								// CHANGE: NFA tempNFA = NFA(begin.toString());
 								NFA tempNFA = new NFA();
 								while (index <= end) {
-									// NFA indexNFA = NFA(index.toString());
+									// CHANGE: NFA indexNFA = NFA(index.toString());
 									// tempNFA = NFAor(tempNFA, indexNFA);
 									index = (char) (index + 1);
 								}
@@ -112,8 +107,7 @@ public class Main {
 
 							if (i + 1 < lineTokens.size()) {
 								String nextToken = lineTokens.get(i + 1);
-								// Check for concatenation after
-								// + * )
+								// Check for concatenation after + * )
 								if (operator == '+' || operator == '*' || operator == ')') {
 									if (!isOperator(nextToken) || nextToken.equals("(")) {
 										System.out.println("CONCAT case [+*)].operand OR ).(: " + nextToken);
@@ -179,8 +173,7 @@ public class Main {
 	}
 
 	private static void parseOperator(Character currentOperator) {
-		// execute operator if its precedence is lower than or equal to stack's
-		// peek, else push to stack
+		// execute operator if its precedence is lower than or equal to stack's peek, else push to stack
 		Character stackPeek = operators.empty() ? ' ' : operators.peek();
 		HashMap<Character, Integer> operatorsPrecedence = new HashMap<Character, Integer>();
 		operatorsPrecedence.put('(', 10);
@@ -191,8 +184,7 @@ public class Main {
 		operatorsPrecedence.put('|', 7);
 
 		int currentPrecedence = operatorsPrecedence.get(currentOperator);
-		int stackPeekPrecedence = operators.empty() ? 11 : operatorsPrecedence.get(stackPeek); // 11 not needed, it would enter in
-																								// operators.empty case
+		int stackPeekPrecedence = operators.empty() ? 0 : operatorsPrecedence.get(stackPeek); // 0 not needed, it would enter in operators.empty case
 		if (currentOperator == ')') {
 			// pop and execute from stack till '('
 			executeBracket();
@@ -244,6 +236,7 @@ public class Main {
 
 	private static NFA generateNFA(Character operator, NFA operand1, NFA operand2) {
 		switch (operator) {
+		// CHANGE:
 		case '.':
 			// NFAconcat(operands1, operand2);
 			break;
