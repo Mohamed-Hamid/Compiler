@@ -45,12 +45,14 @@ public class Main {
 					}
 				} else { // Expressions OR Definitions
 					Boolean isDefinition;
+					String definitionLHS = "";
 					if ((line.indexOf('=') != -1 && line.indexOf('=') < line.indexOf(':')) || line.indexOf(':') == -1) {
 						isDefinition = true;
 					} else {
 						isDefinition = false;
 					}
 					if (isDefinition) {
+						definitionLHS = line.substring(0, line.indexOf('=')).trim();
 						// System.out.println(line.substring(0,
 						// line.indexOf('=')).trim() + "=");
 						line = line.substring(line.indexOf('=') + 1);
@@ -146,7 +148,7 @@ public class Main {
 					NFA resultNFA = operands.pop();
 
 					if (isDefinition) {
-						definitions.put(line.substring(0, line.indexOf('=')).trim(), resultNFA);
+						definitions.put(definitionLHS, resultNFA);
 					} else {
 						// Put in symbol table
 					}
@@ -182,6 +184,7 @@ public class Main {
 		Character stackPeek = operators.empty() ? ' ' : operators.peek();
 		HashMap<Character, Integer> operatorsPrecedence = new HashMap<Character, Integer>();
 		operatorsPrecedence.put('(', 10);
+		operatorsPrecedence.put(')', 10);
 		operatorsPrecedence.put('*', 9);
 		operatorsPrecedence.put('+', 9);
 		operatorsPrecedence.put('.', 8);
@@ -196,19 +199,25 @@ public class Main {
 		} else if (operators.empty() || operators.peek() == '(' || currentOperator == '(' || currentPrecedence > stackPeekPrecedence) {
 			operators.push(currentOperator);
 		} else {
-			stackPeek = operators.pop();
-			while (currentPrecedence <= stackPeekPrecedence && stackPeek != '(') {
-				NFA firstOperandNFA = operands.pop();
-				NFA resultNFA;
-				if (stackPeek == '.' | stackPeek == '|') {
-					NFA secondOperandNFA = operands.pop();
-					resultNFA = generateNFA(stackPeek, firstOperandNFA, secondOperandNFA);
+			while (true) {
+
+				if (currentPrecedence <= stackPeekPrecedence && stackPeek != '(') {
+					NFA firstOperandNFA = operands.pop();
+					NFA resultNFA;
+					if (stackPeek == '.' | stackPeek == '|') {
+						NFA secondOperandNFA = operands.pop();
+						resultNFA = generateNFA(stackPeek, firstOperandNFA, secondOperandNFA);
+					} else {
+						resultNFA = generateNFA(stackPeek, firstOperandNFA, null);
+					}
+					operands.push(resultNFA);
+					stackPeek = operators.pop();
+					stackPeek = operators.empty() ? ' ' : operators.peek();
+					stackPeekPrecedence = operators.empty() ? 0 : operatorsPrecedence.get(stackPeek);
+
 				} else {
-					resultNFA = generateNFA(stackPeek, firstOperandNFA, null);
+					break;
 				}
-				operands.push(resultNFA);
-				stackPeek = operators.empty() ? ' ' : operators.pop();
-				stackPeekPrecedence = operators.empty() ? 11 : operatorsPrecedence.get(stackPeek);
 			}
 			operators.push(currentOperator);
 		}
@@ -255,8 +264,12 @@ public class Main {
 		while (!operators.isEmpty()) {
 			Character operator = operators.pop();
 			NFA firstOperandNFA = operands.pop();
-			NFA secondOperandNFA = operands.pop();
-			operands.push(generateNFA(operator, firstOperandNFA, secondOperandNFA));
+			if (operator == '.' | operator == '|') {
+				NFA secondOperandNFA = operands.pop();
+				operands.push(generateNFA(operator, firstOperandNFA, secondOperandNFA));
+			} else {
+				operands.push(generateNFA(operator, firstOperandNFA, null));
+			}
 		}
 	}
 }
