@@ -30,8 +30,7 @@ public class Main {
 				"C:\\Users\\electric\\Dropbox\\College\\Term 9\\Programming Languages Translation\\Project phase 1\\rules.txt"))) {
 			String line = br.readLine();
 			while (line != null) {
-				// Read line, separate on four cases { , [ , expression,
-				// definition
+				// Read line, separate on four cases { , [ , expression, definition
 				if (line.charAt(0) == '{') {
 					for (String token : line.substring(1, line.length() - 1).trim().split(" ")) {
 						// System.out.println("==="+ token+"===");
