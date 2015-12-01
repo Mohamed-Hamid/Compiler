@@ -11,9 +11,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import lexicalAnalyzer.*;
+
 public class Main {
 	private static HashMap<String, String> symbolTable;
-	private static Stack<Double> operands;
+	private static Stack<NFA> operands;
 	private static Stack<Character> operators;
 	private static Character[] seps = { ' ', '-', '|', '+', '*', '(', ')' };
 	private static ArrayList<Character> separators = new ArrayList<Character>(
@@ -86,7 +88,7 @@ public class Main {
 
 					// Parse tokens with precedence
 					String token;
-					operands = new Stack<Double>();
+					operands = new Stack<NFA>();
 					operators = new Stack<Character>();
 					for (int i = 0; i < lineTokens.size(); i++) {
 						token = lineTokens.get(i);
@@ -97,6 +99,8 @@ public class Main {
 								throw new Exception(
 										"CANNOT BE A SPACE AS OPERATOR!");
 							} else if (operator == '-') {
+								// specially treated operator, no precedence
+								// rules, may be implemented in a neat way later
 								char begin = lineTokens.get(i - 1).charAt(0), end = lineTokens
 										.get(i + 1).charAt(0);
 								i++;
@@ -109,74 +113,9 @@ public class Main {
 									index = (char) (index + 1);
 								}
 								// operands.push(tempNFA);
-							} else if (operator == '*') {
-								// NFA tempNFA= operands.pop();
-								// operands.push(NFAkleene(tempNFA));
-							} else if (operator == '+') {
-								// NFA tempNFA= operands.pop();
-								// operands.push(NFAplus(tempNFA));
 							} else {
-								// operators: | ( ) .
-								if (operator == ')') {
-									Character poppedOperator = operators.pop();
-									while (poppedOperator != '(') {
-										if (poppedOperator == '|') {
-											// TC
-											// NFA firstOperandNFA =
-											// operands.pop();
-											// NFA secondOperandNFA =
-											// operands.pop();
-											// NFA resultNFA =
-											// NFAor(firstOperandNFA,
-											// secondOperandNFA);
-											// operands.push(resultNFA);
-										}
-										poppedOperator = operators.pop();
-									}
-
-									/*
-									 * wrong test case "a (a)*", would make start
-									 * on a(a) not (a) only if
-									 * (!operators.empty() && operators.peek()
-									 * == '.') { // operand ( case //
-									 * operators.pop() // NFA firstOperandNFA =
-									 * operands.pop(); // NFA secondOperandNFA =
-									 * // operands.pop(); // NFA resultNFA = //
-									 * NFAconcat(firstOperandNFA, //
-									 * secondOperandNFA); //
-									 * operands.push(resultNFA); }
-									 */
-								} else if (operators.isEmpty()
-										|| operators.peek() == '('
-										|| operator == '(') { // | (
-									operators.push(operator);
-								} else if (operator == '|'
-										&& operators.peek() == '|') {
-									// TC
-									// NFA firstOperandNFA =
-									// operands.pop();
-									// NFA secondOperandNFA =
-									// operands.pop();
-									// NFA resultNFA =
-									// NFAor(firstOperandNFA,
-									// secondOperandNFA);
-									// operands.push(resultNFA);
-									// operators.push('|');
-								} else if (operator == '|'
-										&& operators.peek() == '.') {
-									if (!operators.empty()
-											&& operators.peek() == '.') {
-										// operand ( case
-										operators.pop();
-										// NFA firstOperandNFA = operands.pop();
-										// NFA secondOperandNFA =
-										// operands.pop();
-										// NFA resultNFA = NFAconcat(
-										// firstOperandNFA, secondOperandNFA);
-										// operands.push(resultNFA);
-											operators.push('|');
-									}
-								}
+								// operators: * + | ( ) .
+								parseOperator(operator);
 							}
 
 							if (i + 1 < lineTokens.size()) {
@@ -227,7 +166,7 @@ public class Main {
 											.println("CONCAT case operand.(: "
 													+ nextToken);
 									// TC
-									// checkOperatorsPrecedence('.', 
+									// parseOperator('.',
 									// operators.push('.');
 
 								}
@@ -286,5 +225,80 @@ public class Main {
 		// return operandNFA
 		return true;
 
+	}
+
+	private static void parseOperator(Character currentOperator) {
+		// execute operator if its precedence is lower than or equal to stack's
+		// peek, else push to stack
+		Character stackPeek = operators.empty() ? ' ' : operators.peek();
+		HashMap<Character, Integer> operatorsPrecedence = new HashMap<Character, Integer>();
+		operatorsPrecedence.put('(', 10);
+		operatorsPrecedence.put('*', 9);
+		operatorsPrecedence.put('+', 9);
+		operatorsPrecedence.put('.', 8);
+		operatorsPrecedence.put('|', 7);
+
+		int currentPrecedence = operatorsPrecedence.get(currentOperator);
+		int stackPeekPrecedence = operators.empty() ? 11 : operatorsPrecedence
+				.get(stackPeek); // 11 not needed, it would enter in
+									// operators.empty case
+		if (currentOperator == ')') {
+			// pop and execute from stack till '('
+			executeBracket();
+		} else if (operators.empty() || operators.peek() == '('
+				|| currentOperator == '('
+				|| currentPrecedence > stackPeekPrecedence) {
+			operators.push(currentOperator);
+		} else {
+			stackPeek = operators.pop();
+			while (currentPrecedence <= stackPeekPrecedence && stackPeek != '(') {
+				NFA firstOperandNFA = operands.pop();
+				NFA secondOperandNFA = operands.pop();
+				NFA resultNFA = generateNFA(stackPeek, firstOperandNFA,
+						secondOperandNFA);
+				operands.push(resultNFA);
+				stackPeek = operators.empty() ? ' ' : operators.pop();
+				stackPeekPrecedence = operators.empty() ? 11
+						: operatorsPrecedence.get(stackPeek);
+			}
+			operators.push(currentOperator);
+		}
+	}
+
+	private static void executeBracket() {
+		Character poppedOperator = operators.pop();
+		while (poppedOperator != '(') {
+			if (poppedOperator == '|') {
+				// TC
+				// NFA firstOperandNFA =
+				// operands.pop();
+				// NFA secondOperandNFA =
+				// operands.pop();
+				// NFA resultNFA =
+				// NFAor(firstOperandNFA,
+				// secondOperandNFA);
+				// operands.push(resultNFA);
+			}
+			poppedOperator = operators.pop();
+		}
+	}
+
+	private static NFA generateNFA(Character operator, NFA operand1,
+			NFA operand2) {
+		switch (operator) {
+		case '.':
+			// NFAconcat(operands1, operand2);
+			break;
+		case '|':
+			// NFAor(operands1, operand2);
+			break;
+		case '*':
+			// NFAkleene(operands1, operand2);
+			break;
+		case '+':
+			// NFAplus(operands1, operand2);
+			break;
+		}
+		return new NFA();
 	}
 }
