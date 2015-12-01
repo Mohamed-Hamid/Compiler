@@ -203,7 +203,7 @@ public class Main {
 						resultNFA = generateNFA(stackPeek, firstOperandNFA, null);
 					}
 					operands.push(resultNFA);
-					stackPeek = operators.pop();
+					operators.pop();
 					stackPeek = operators.empty() ? ' ' : operators.peek();
 					stackPeekPrecedence = operators.empty() ? 0 : operatorsPrecedence.get(stackPeek);
 
