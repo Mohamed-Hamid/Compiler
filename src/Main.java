@@ -20,10 +20,10 @@ public class Main {
 	private static Character[] seps = { ' ', '-', '|', '+', '*', '(', ')' };
 	private static ArrayList<Character> separators = new ArrayList<Character>(
 			Arrays.asList(seps));
-	private static HashMap<String, Double> definitions = new HashMap<String, Double>(); // TC
-																						// Double
-																						// =>
-																						// NFA
+	private static HashMap<String, NFA> definitions = new HashMap<String, NFA>(); // TC
+																					// Double
+																					// =>
+																					// NFA
 
 	public static void main(String[] args) throws Exception {
 		symbolTable = new HashMap<String, String>();
@@ -213,18 +213,14 @@ public class Main {
 		return token.length() == 1 && separators.contains(token.charAt(0));
 	}
 
-	// TC change boolean to NFA
-	private static boolean getOperandNFA(String token) {
-		// NFA operandNFA;
+	private static NFA getOperandNFA(String token) {
+		NFA operandNFA;
 		if (definitions.containsKey(token)) {
-			// operandNFA = definitions.get(token);
+			operandNFA = definitions.get(token);
 		} else {
-			// Change operand to a NFA
-			// operandNFA = NFA(token);
+			operandNFA = new NFA();
 		}
-		// return operandNFA
-		return true;
-
+		return operandNFA;
 	}
 
 	private static void parseOperator(Character currentOperator) {
