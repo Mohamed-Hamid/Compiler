@@ -55,8 +55,6 @@ public class Main {
 						isDefinition = false;
 					}
 					if (isDefinition) {
-						definitions.put(line.substring(0, line.indexOf('='))
-								.trim(), 1.0);
 						// System.out.println(line.substring(0,
 						// line.indexOf('=')).trim() + "=");
 						line = line.substring(line.indexOf('=') + 1);
@@ -234,6 +232,14 @@ public class Main {
 						// operands.push(resultNFA);
 					}
 					// NFA resultNFA = operands.pop();
+
+					// if (isDefinition) {
+					//	definitions.put(line.substring(0, line.indexOf('='))
+					//			.trim(), resultNFA);
+					// } else {
+					//	Put in symbol table
+					// 
+					// }
 				}
 				line = br.readLine();
 			}
