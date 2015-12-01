@@ -159,9 +159,12 @@ public class Main {
 		} else {
 			if (!token.equals("\\L")) {
 				token = token.replace("\\", "");
+				operandNFA = new NFA(); // CHANGE: insert your null parameter here
+			} else {
+				operandNFA = new NFA();
 			}
 			// System.out.println(token);
-			operandNFA = new NFA();
+			
 		}
 		return operandNFA;
 	}
