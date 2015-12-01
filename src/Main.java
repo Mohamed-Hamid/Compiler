@@ -30,6 +30,7 @@ public class Main {
 						// System.out.println("==="+ token+"===");
 						// CHANGE: NFA concatenation of chars
 						expressions.put(token, new NFA()); // CHANGE: call string NFA
+						symbolTable.put(token, token.toUpperCase());
 					}
 				} else if (line.charAt(0) == '[') {
 					for (int i = 1; i < line.length() - 1; i++) {
@@ -128,6 +129,7 @@ public class Main {
 					if (isDefinition) {
 						definitions.put(LHSName, resultNFA);
 					} else {
+						symbolTable.put(LHSName, LHSName.toUpperCase());
 						expressions.put(LHSName, resultNFA);
 					}
 				}
