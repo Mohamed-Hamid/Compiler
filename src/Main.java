@@ -145,6 +145,7 @@ public class Main {
 										// secondOperandNFA);
 										// operands.push(resultNFA);
 									}
+									// HERE
 								} else if (operators.isEmpty()
 										|| operators.peek() == '('
 										|| operator == '(') { // | (
@@ -158,9 +159,11 @@ public class Main {
 								// + * )
 								if (operator == '+' || operator == '*'
 										|| operator == ')') {
-									if (!isOperator(nextToken)) {
-										System.out.println("CONCAT2: "
-												+ nextToken);
+									if (!isOperator(nextToken)
+											|| nextToken.equals("(")) {
+										System.out
+												.println("CONCAT case [+*)].operand OR ).(: "
+														+ nextToken);
 										// TC
 										// nextOperandNFA =
 										// getOperandNFA(nextToken)
@@ -169,10 +172,6 @@ public class Main {
 										// operands.pop();
 										// operands.push(resultNFA);
 									}
-								} else if (nextToken.equals("(")
-										&& (operator == '+' || operator == '*')) {
-									// Check for concatenation before (
-
 								}
 							}
 
@@ -188,8 +187,7 @@ public class Main {
 							if (i + 1 < lineTokens.size()) {
 								String nextToken = lineTokens.get(i + 1);
 								if (!isOperator(nextToken)) {
-									// System.out.println("CONCAT1: " +
-									// nextToken);
+									System.out.println("CONCAT case operand.operand: " + nextToken);
 									// TC
 									// nextOperandNFA = getOperandNFA(nextToken)
 									// NFA resultNFA = NFAconcat(operandNFA,
@@ -197,7 +195,7 @@ public class Main {
 									// operands.pop();
 									// operands.push(resultNFA);
 								} else if (nextToken.equals("(")) {
-									System.out.println("CONCAT3: " + nextToken);
+									System.out.println("CONCAT case operand.(: " + nextToken);
 									// TC
 									// operators.push('.');
 
@@ -208,9 +206,6 @@ public class Main {
 				}
 				line = br.readLine();
 			}
-			// for(String key: symbolTable.keySet()){
-			// System.out.println(key + " => " + symbolTable.get(key));
-			// }
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
