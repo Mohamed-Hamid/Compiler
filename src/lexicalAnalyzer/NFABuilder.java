@@ -50,11 +50,16 @@ public class NFABuilder {
     }
 	
 	/* Base Case 5: Kleene Closure */
-	public static final NFA kleene(NFA nfa) {
+	public static final NFA kleeneStar(NFA nfa) {
 		NFA newNFA = new NFA(nfa.getInputState(), nfa.getOutputState());
 		newNFA.getOutputState().addEpsilonTranisition(nfa.getInputState());
         newNFA.getInputState().addEpsilonTranisition(nfa.getOutputState());;
 		return newNFA;	
+    }
+	
+	/* Kleene Closure */
+	public static final NFA kleenePlus(NFA nfa) {
+		return concat(nfa, kleeneStar(nfa));
     }
 	
 	/* String */

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NFAState {
-	public static final Character EPSILON = 'E';
+	public static final Character EPSILON = 'L';
 	private static int count = 1;
 	private int num;
 	private boolean last;

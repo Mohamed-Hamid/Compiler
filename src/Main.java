@@ -21,7 +21,7 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		symbolTable = new HashMap<String, String>();
 		try (BufferedReader br = new BufferedReader(new FileReader(
-				"C:\\Users\\electric\\Dropbox\\College\\Term 9\\Programming�Languages�Translation\\Project phase 1\\rules.txt"))) {
+				"/home/hamid/Desktop/rules.txt"))) {
 			String line = br.readLine();
 			while (line != null) {
 				// Read line, separate on four cases { , [ , expression, definition
@@ -29,7 +29,7 @@ public class Main {
 					for (String token : line.substring(1, line.length() - 1).trim().split(" ")) {
 						// System.out.println("==="+ token+"===");
 						// CHANGE: NFA concatenation of chars
-						expressions.put(token, new NFA()); // CHANGE: call string NFA
+						expressions.put(token, NFABuilder.s(token)); // CHANGE: call string NFA
 						symbolTable.put(token, token.toUpperCase());
 					}
 				} else if (line.charAt(0) == '[') {
@@ -37,7 +37,7 @@ public class Main {
 						char parsedChar = line.charAt(i);
 						if (parsedChar != '\\' && parsedChar != ' ') {
 							symbolTable.put(parsedChar + "", parsedChar + "_PUNCT");
-							expressions.put(parsedChar + "", new NFA()); // CHANGE: call character NFA
+							expressions.put(parsedChar + "", NFABuilder.c(parsedChar)); // CHANGE: call character NFA
 						}
 					}
 				} else { // Expressions OR Definitions
@@ -76,14 +76,18 @@ public class Main {
 								char begin = lineTokens.get(i - 1).charAt(0), end = lineTokens.get(i + 1).charAt(0);
 								i++;
 								// operands.pop();
-								char index = (char) (begin + 1);
+								char index = (char) begin;
 								// CHANGE: NFA tempNFA = NFA(begin.toString());
-								NFA tempNFA = new NFA();
+								/* NFA tempNFA = new NFA(); */
+								ArrayList<Character> rangeChars = new ArrayList<>();
 								while (index <= end) {
 									// CHANGE: NFA indexNFA = NFA(index.toString());
 									// tempNFA = NFAor(tempNFA, indexNFA);
+									rangeChars.add(index);
 									index = (char) (index + 1);
 								}
+								System.out.println(" * " + rangeChars+ " * ");
+								NFA tempNFA = NFABuilder.or(rangeChars.toArray());
 								operands.push(tempNFA);
 							} else {
 								// operators: * + | ( ) .
@@ -137,7 +141,8 @@ public class Main {
 			}
 
 			// Combine each line's NFA in a single NFA
-			NFA resultNFA = combineNFAs(); // CHANGE: to be returned
+//			NFA resultNFA = combineNFAs(); // CHANGE: to be returned
+			NFA resultantNFA = NFABuilder.or(expressions.values().toArray());
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -147,7 +152,7 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-
+	
 	private static boolean isOperator(String token) {
 		return token.length() == 1 && separators.contains(token.charAt(0));
 	}
@@ -158,7 +163,7 @@ public class Main {
 			operandNFA = definitions.get(token);
 		} else {
 			token = token.replace("\\", "");
-			operandNFA = new NFA();
+			operandNFA = NFABuilder.s(token);
 		}
 		return operandNFA;
 	}
@@ -226,22 +231,25 @@ public class Main {
 	}
 
 	private static NFA generateNFA(Character operator, NFA operand1, NFA operand2) {
+		NFA resultantNFA = null;
 		switch (operator) {
 		// CHANGE:
 		case '.':
-			// NFAconcat(operands1, operand2);
+			resultantNFA = NFABuilder.concat(operand1, operand1);
 			break;
 		case '|':
 			// NFAor(operands1, operand2);
+			resultantNFA = NFABuilder.or(operand1, operand2);
 			break;
 		case '*':
 			// NFAkleene(operands1, operand2);
+			resultantNFA = NFABuilder.kleeneStar(operand1);
 			break;
 		case '+':
-			// NFAplus(operands1, operand2);
+			resultantNFA = NFABuilder.kleenePlus(operand1);
 			break;
 		}
-		return new NFA();
+		return resultantNFA;
 	}
 
 	private static void executeStack() {
@@ -278,11 +286,12 @@ public class Main {
 		return lineTokens;
 	}
 
-	private static NFA combineNFAs() {
-		NFA resultNFA = new NFA();
-		for (String name : expressions.keySet()) {
-			// resultNFA = NFAor(resultNFA, expressions.get(name)); // CHANGE
-		}
-		return resultNFA;
-	}
+//	private static NFA combineNFAs() {
+//		NFABuilder.or(expressions.values());
+//		for (String name : expressions.keySet()) {
+//			// resultNFA = NFAor(resultNFA, expressions.get(name)); // CHANGE
+//		}
+//		/*return resultNFA;*/
+//		return null;
+//	}
 }
