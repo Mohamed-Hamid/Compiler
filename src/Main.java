@@ -157,7 +157,10 @@ public class Main {
 		if (definitions.containsKey(token)) {
 			operandNFA = definitions.get(token);
 		} else {
-			token = token.replace("\\", "");
+			if (!token.equals("\\L")) {
+				token = token.replace("\\", "");
+			}
+			// System.out.println(token);
 			operandNFA = new NFA();
 		}
 		return operandNFA;
