@@ -134,13 +134,14 @@ public class Main {
 										poppedOperator = operators.pop();
 									}
 
-									/* wrong test case a (a)*, would make start on a(a) not (a) only
-									 * if (!operators.empty() &&
-									 * operators.peek() == '.') { // operand (
-									 * case // operators.pop() // NFA
-									 * firstOperandNFA = operands.pop(); // NFA
-									 * secondOperandNFA = // operands.pop(); //
-									 * NFA resultNFA = //
+									/*
+									 * wrong test case "a (a)*", would make start
+									 * on a(a) not (a) only if
+									 * (!operators.empty() && operators.peek()
+									 * == '.') { // operand ( case //
+									 * operators.pop() // NFA firstOperandNFA =
+									 * operands.pop(); // NFA secondOperandNFA =
+									 * // operands.pop(); // NFA resultNFA = //
 									 * NFAconcat(firstOperandNFA, //
 									 * secondOperandNFA); //
 									 * operands.push(resultNFA); }
@@ -161,6 +162,20 @@ public class Main {
 									// secondOperandNFA);
 									// operands.push(resultNFA);
 									// operators.push('|');
+								} else if (operator == '|'
+										&& operators.peek() == '.') {
+									if (!operators.empty()
+											&& operators.peek() == '.') {
+										// operand ( case
+										operators.pop();
+										// NFA firstOperandNFA = operands.pop();
+										// NFA secondOperandNFA =
+										// operands.pop();
+										// NFA resultNFA = NFAconcat(
+										// firstOperandNFA, secondOperandNFA);
+										// operands.push(resultNFA);
+											operators.push('|');
+									}
 								}
 							}
 
@@ -212,6 +227,7 @@ public class Main {
 											.println("CONCAT case operand.(: "
 													+ nextToken);
 									// TC
+									// checkOperatorsPrecedence('.', 
 									// operators.push('.');
 
 								}
