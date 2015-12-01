@@ -4,11 +4,11 @@ public class NFABuilder {
 	
 	/* Base Case 1: Empty String */
 	public static final NFA e() {
-		NFAState inputState  = new NFAState() ;
-		NFAState outputState = new NFAState() ;
+		NFAState inputState  = new NFAState();
+		NFAState outputState = new NFAState();
 		inputState.addEpsilonTranisition(outputState);
 		outputState.setLast(true);
-		return new NFA(inputState ,outputState) ;
+		return new NFA(inputState ,outputState);
     }
 	
 	/* Base Case 2: Single Character */
@@ -16,31 +16,31 @@ public class NFABuilder {
 		NFAState inputState = new NFAState();
 		NFAState outputState = new NFAState();
 		outputState.setLast(true);
-		inputState.addTransition(outputState, c) ;
-		return new NFA(inputState ,outputState) ;
+		inputState.addTransition(outputState, c);
+		return new NFA(inputState ,outputState);
     }
 	
 	/* Base Case 3: Concatenation */
 	public static final NFA concat(NFA first, NFA second) {
-		first.outputState.setLast(false);
-		second.outputState.setLast(true);
-		first.outputState.addEpsilonTranisition(first.inputState);
-		return new NFA(first.inputState ,second.outputState) ;
+		first.getOutputState().setLast(false);
+		second.getOutputState().setLast(true);
+		first.getOutputState().addEpsilonTranisition(second.getInputState());
+		return new NFA(first.getInputState(), second.getOutputState());
     }
 	
 	/* Base Case 4: Orring */
 	public static final NFA or(NFA first, NFA second) {
-		first.outputState.setLast(false);
-		second.outputState.setLast(false);
+		first.getOutputState().setLast(false);
+		second.getOutputState().setLast(false);
 		
 		NFAState inputState = new NFAState();
 		NFAState outputState = new NFAState();
 		
-		inputState.addEpsilonTranisition(first.inputState);
-		inputState.addEpsilonTranisition(second.inputState);
+		inputState.addEpsilonTranisition(first.getInputState());
+		inputState.addEpsilonTranisition(second.getInputState());
 		
-		first.outputState.addEpsilonTranisition(outputState);
-		second.outputState.addEpsilonTranisition(outputState);
+		first.getOutputState().addEpsilonTranisition(outputState);
+		second.getOutputState().addEpsilonTranisition(outputState);
 		
 		outputState.setLast(true);
 		
@@ -51,22 +51,28 @@ public class NFABuilder {
 	
 	/* Base Case 5: Kleene Closure */
 	public static final NFA kleene(NFA nfa) {
-		NFA newNFA = new NFA(nfa.inputState, nfa.outputState);
-		newNFA.outputState.addEpsilonTranisition(nfa.inputState);
-        newNFA.inputState.addEpsilonTranisition(nfa.outputState);;
+		NFA newNFA = new NFA(nfa.getInputState(), nfa.getOutputState());
+		newNFA.getOutputState().addEpsilonTranisition(nfa.getInputState());
+        newNFA.getInputState().addEpsilonTranisition(nfa.getOutputState());;
 		return newNFA;	
     }
 	
 	/* String */
 	public static final NFA s(String str) {
-		return str.length() == 0 ? e() : concat(c(str.charAt(0)), s(str.substring(1)));
+		if(str.length() == 0){
+			return e();
+		} else if(str.length() == 1){
+			return c(str.charAt(0));
+		} else {
+			return concat(c(str.charAt(0)), s(str.substring(1)));
+		}
     }
 	
 	/* Orring between multiple NFAs */
 	public static final NFA or(Object... regexs) {
 		NFA exp = regex(regexs[0]);
 		for (int i = 1; i < regexs.length; i++) {
-		    exp = or(exp, regex(regexs[i])) ;
+		    exp = or(exp, regex(regexs[i]));
 		}
 		return exp ;
     }
@@ -75,21 +81,21 @@ public class NFABuilder {
 	public static final NFA concat(Object... regexs) {
 		NFA exp = regex(regexs[0]);
 		for (int i = 1; i < regexs.length; i++) {
-		    exp = concat(exp, regex(regexs[i])) ;
+		    exp = concat(exp, regex(regexs[i]));
 		}
-		return exp ;
+		return exp;
     }
 	
 	/* Regex conversion */
     private static final NFA regex(Object o) {
 		if (o instanceof NFA)
-		    return (NFA)o ;
+		    return (NFA)o;
 		else if (o instanceof Character)
-		    return c((Character)o) ;
+		    return c((Character)o);
 		else if (o instanceof String)
-		    return s((String)o) ;
+		    return s((String)o);
 		else {
-		    throw new RuntimeException("bad regexp") ;
+		    throw new RuntimeException("bad regexp");
 		}
     }
 

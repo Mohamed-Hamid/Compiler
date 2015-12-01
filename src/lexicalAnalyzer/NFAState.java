@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NFAState {
-	public static final Character EPSILON = null;
+	public static final Character EPSILON = 'E';
 	private boolean last;
-	private HashMap<Character, ArrayList<NFAState>> next;
+	public HashMap<Character, ArrayList<NFAState>> next;
 	
 	public NFAState(){
 		next = new HashMap<>();
