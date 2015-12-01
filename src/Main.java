@@ -124,56 +124,33 @@ public class Main {
 							// System.out.println("or: " + token);
 						} else { // operand
 							// System.out.println("od: " + token);
-							// TC
-							// NFA operandNFA = getOperandNFA(token);
-							// operands.push(operandNFA);
+							NFA operandNFA = getOperandNFA(token);
+							operands.push(operandNFA);
 
-							// Check for concatenation operator after the
-							// operand
+							// Check for concatenation operator after the operand
 							if (i + 1 < lineTokens.size()) {
 								String nextToken = lineTokens.get(i + 1);
 								if (!isOperator(nextToken)) {
 									System.out.println("CONCAT case operand.operand: " + nextToken);
-									// TC
-									// nextOperandNFA = getOperandNFA(nextToken)
-									// NFA resultNFA = NFAconcat(operandNFA,
-									// nextOperandNFA);
-									// operands.pop();
-									// operands.push(resultNFA);
+									parseOperator('.');
 								} else if (nextToken.equals("(")) {
 									System.out.println("CONCAT case operand.(: " + nextToken);
-									// TC
-									// parseOperator('.',
-									// operators.push('.');
-
+									parseOperator('.');
 								}
 							}
 						}
 					}
 
 					// empty the operators stack
-					while (!operators.isEmpty()) {
-						Character operator = operators.pop();
-						// NFA firstOperandNFA = operands.pop();
-						// NFA secondOperandNFA = operands.pop();
-						// if(operator == '|'){
-						// NFA resultNFA = NFAor(firstOperandNFA,
-						// secondOperandNFA);
-						// } else if( operator == '.' ) {
-						// NFA resultNFA = NFAconcat(firstOperandNFA,
-						// secondOperandNFA);
-						// }
-						// operands.push(resultNFA);
-					}
-					// NFA resultNFA = operands.pop();
+					executeStack();
 
-					// if (isDefinition) {
-					// definitions.put(line.substring(0, line.indexOf('='))
-					// .trim(), resultNFA);
-					// } else {
-					// Put in symbol table
-					//
-					// }
+					NFA resultNFA = operands.pop();
+
+					if (isDefinition) {
+						definitions.put(line.substring(0, line.indexOf('=')).trim(), resultNFA);
+					} else {
+						// Put in symbol table
+					}
 				}
 				line = br.readLine();
 			}
@@ -262,5 +239,14 @@ public class Main {
 			break;
 		}
 		return new NFA();
+	}
+
+	private static void executeStack() {
+		while (!operators.isEmpty()) {
+			Character operator = operators.pop();
+			NFA firstOperandNFA = operands.pop();
+			NFA secondOperandNFA = operands.pop();
+			operands.push(generateNFA(operator, firstOperandNFA, secondOperandNFA));
+		}
 	}
 }
