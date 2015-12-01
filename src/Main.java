@@ -134,7 +134,7 @@ public class Main {
 										poppedOperator = operators.pop();
 									}
 
-									if (operators.peek() == '.') {
+									if (!operators.empty() && operators.peek() == '.') {
 										// operand ( case
 										// operators.pop()
 										// NFA firstOperandNFA = operands.pop();
@@ -221,7 +221,7 @@ public class Main {
 					
 					// empty the operators stack 
 					while( !operators.isEmpty() ){
-						// Character operator = operators.pop();
+						Character operator = operators.pop();
 						// NFA firstOperandNFA = operands.pop();
 						// NFA secondOperandNFA = operands.pop();
 						// if(operator == '|'){
