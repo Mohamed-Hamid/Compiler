@@ -16,6 +16,7 @@ public class Main {
 	private static Character[] seps = { ' ', '-', '|', '+', '*', '(', ')' };
 	private static ArrayList<Character> separators = new ArrayList<Character>(Arrays.asList(seps));
 	private static HashMap<String, NFA> definitions = new HashMap<String, NFA>();
+	private static HashMap<String, NFA> expressions = new HashMap<String, NFA>();
 
 	public static void main(String[] args) throws Exception {
 		symbolTable = new HashMap<String, String>();
@@ -28,27 +29,30 @@ public class Main {
 					for (String token : line.substring(1, line.length() - 1).trim().split(" ")) {
 						// System.out.println("==="+ token+"===");
 						// CHANGE: NFA concatenation of chars
+						expressions.put(token, new NFA()); // CHANGE: call string NFA
 					}
 				} else if (line.charAt(0) == '[') {
 					for (int i = 1; i < line.length() - 1; i++) {
 						char parsedChar = line.charAt(i);
 						if (parsedChar != '\\' && parsedChar != ' ') {
 							symbolTable.put(parsedChar + "", parsedChar + "_PUNCT");
+							expressions.put(parsedChar + "", new NFA()); // CHANGE: call character NFA
 						}
 					}
 				} else { // Expressions OR Definitions
 					Boolean isDefinition;
-					String definitionLHS = "";
+					String LHSName;
 					if ((line.indexOf('=') != -1 && line.indexOf('=') < line.indexOf(':')) || line.indexOf(':') == -1) {
 						isDefinition = true;
 					} else {
 						isDefinition = false;
 					}
 					if (isDefinition) {
-						definitionLHS = line.substring(0, line.indexOf('=')).trim();
+						LHSName = line.substring(0, line.indexOf('=')).trim();
 						// System.out.println(line.substring(0, line.indexOf('=')).trim() + "=");
 						line = line.substring(line.indexOf('=') + 1);
 					} else {
+						LHSName = line.substring(0, line.indexOf(':')).trim();
 						line = line.substring(line.indexOf(':') + 1);
 					}
 
@@ -122,13 +126,17 @@ public class Main {
 					NFA resultNFA = operands.pop();
 
 					if (isDefinition) {
-						definitions.put(definitionLHS, resultNFA);
+						definitions.put(LHSName, resultNFA);
 					} else {
-						// Put in symbol table
+						expressions.put(LHSName, resultNFA);
 					}
 				}
 				line = br.readLine();
 			}
+
+			// Combine each line's NFA in a single NFA
+			NFA resultNFA = combineNFAs(); // CHANGE: to be returned
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -266,5 +274,13 @@ public class Main {
 			}
 		}
 		return lineTokens;
+	}
+
+	private static NFA combineNFAs() {
+		NFA resultNFA = new NFA();
+		for (String name : expressions.keySet()) {
+			// resultNFA = NFAor(resultNFA, expressions.get(name)); // CHANGE
+		}
+		return resultNFA;
 	}
 }
