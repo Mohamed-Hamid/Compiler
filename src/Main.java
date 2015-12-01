@@ -268,17 +268,13 @@ public class Main {
 	private static void executeBracket() {
 		Character poppedOperator = operators.pop();
 		while (poppedOperator != '(') {
-			if (poppedOperator == '|') {
-				// TC
-				// NFA firstOperandNFA =
-				// operands.pop();
-				// NFA secondOperandNFA =
-				// operands.pop();
-				// NFA resultNFA =
-				// NFAor(firstOperandNFA,
-				// secondOperandNFA);
-				// operands.push(resultNFA);
-			}
+
+			NFA firstOperandNFA = operands.pop();
+			NFA secondOperandNFA = operands.pop();
+			NFA resultNFA = generateNFA(poppedOperator, firstOperandNFA,
+					secondOperandNFA);
+			operands.push(resultNFA);
+
 			poppedOperator = operators.pop();
 		}
 	}
