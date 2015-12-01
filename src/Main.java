@@ -199,8 +199,13 @@ public class Main {
 			stackPeek = operators.pop();
 			while (currentPrecedence <= stackPeekPrecedence && stackPeek != '(') {
 				NFA firstOperandNFA = operands.pop();
-				NFA secondOperandNFA = operands.pop();
-				NFA resultNFA = generateNFA(stackPeek, firstOperandNFA, secondOperandNFA);
+				NFA resultNFA;
+				if (stackPeek == '.' | stackPeek == '|') {
+					NFA secondOperandNFA = operands.pop();
+					resultNFA = generateNFA(stackPeek, firstOperandNFA, secondOperandNFA);
+				} else {
+					resultNFA = generateNFA(stackPeek, firstOperandNFA, null);
+				}
 				operands.push(resultNFA);
 				stackPeek = operators.empty() ? ' ' : operators.pop();
 				stackPeekPrecedence = operators.empty() ? 11 : operatorsPrecedence.get(stackPeek);
@@ -214,8 +219,14 @@ public class Main {
 		while (poppedOperator != '(') {
 
 			NFA firstOperandNFA = operands.pop();
-			NFA secondOperandNFA = operands.pop();
-			NFA resultNFA = generateNFA(poppedOperator, firstOperandNFA, secondOperandNFA);
+			NFA resultNFA;
+			if (poppedOperator == '.' | poppedOperator == '|') {
+				NFA secondOperandNFA = operands.pop();
+				resultNFA = generateNFA(poppedOperator, firstOperandNFA, secondOperandNFA);
+			} else {
+				resultNFA = generateNFA(poppedOperator, firstOperandNFA, null);
+			}
+
 			operands.push(resultNFA);
 
 			poppedOperator = operators.pop();
