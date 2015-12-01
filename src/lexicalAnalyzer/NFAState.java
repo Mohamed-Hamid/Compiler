@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NFAState {
-	public static final Character EPSILON = '\0';
+	public static final Character EPSILON = null;
 	private boolean last;
 	private HashMap<Character, ArrayList<NFAState>> next;
 	
@@ -29,6 +29,15 @@ public class NFAState {
 	public void addEpsilonTranisition(NFAState nfaState) {
 		this.addTransition(nfaState, NFAState.EPSILON);
 	}
+
+	@Override 
+	public String toString() {
+	    StringBuilder result = new StringBuilder();
+	    for (Character nextChar: next.keySet()){
+            result.append(nextChar);  
+		} 
+	    return result.toString();
+	  }
 
 	public boolean isLast() {
 		return last;
