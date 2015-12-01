@@ -1,4 +1,3 @@
-import java.awt.List;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -6,9 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 import lexicalAnalyzer.*;
@@ -57,23 +53,7 @@ public class Main {
 					}
 
 					// Tokenize line, separate on operators or space
-					ArrayList<String> lineTokens = new ArrayList<String>();
-					StringBuilder tempChars = new StringBuilder();
-					for (int i1 = 0, i2 = 1; i1 < line.length(); i1++, i2++) {
-						char currentChar = line.charAt(i1);
-						char nextChar = i2 < line.length() ? line.charAt(i2) : ' ';
-						if (currentChar == ' ') {
-							continue;
-						} else {
-							tempChars.append(currentChar);
-							char prevChar = i1 > 0 ? line.charAt(i1 - 1) : ' ';
-							if ((separators.contains(nextChar) && currentChar != '\\') || (separators.contains(currentChar) && prevChar != '\\')) {
-								lineTokens.add(tempChars.toString());
-								// System.out.println(tempChars);
-								tempChars = new StringBuilder();
-							}
-						}
-					}
+					ArrayList<String> lineTokens = tokenize(line);
 					System.out.println(lineTokens);
 
 					// Parse tokens with precedence
@@ -118,7 +98,7 @@ public class Main {
 
 							// System.out.println("or: " + token);
 						} else { // operand
-							System.out.println("od: " + token);
+							// System.out.println("od: " + token);
 							NFA operandNFA = getOperandNFA(token);
 							operands.push(operandNFA);
 
@@ -265,5 +245,26 @@ public class Main {
 				operands.push(generateNFA(operator, firstOperandNFA, null));
 			}
 		}
+	}
+
+	private static ArrayList<String> tokenize(String line) {
+		ArrayList<String> lineTokens = new ArrayList<String>();
+		StringBuilder tempChars = new StringBuilder();
+		for (int i1 = 0, i2 = 1; i1 < line.length(); i1++, i2++) {
+			char currentChar = line.charAt(i1);
+			char nextChar = i2 < line.length() ? line.charAt(i2) : ' ';
+			if (currentChar == ' ') {
+				continue;
+			} else {
+				tempChars.append(currentChar);
+				char prevChar = i1 > 0 ? line.charAt(i1 - 1) : ' ';
+				if ((separators.contains(nextChar) && currentChar != '\\') || (separators.contains(currentChar) && prevChar != '\\')) {
+					lineTokens.add(tempChars.toString());
+					// System.out.println(tempChars);
+					tempChars = new StringBuilder();
+				}
+			}
+		}
+		return lineTokens;
 	}
 }
