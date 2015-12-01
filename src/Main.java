@@ -134,17 +134,17 @@ public class Main {
 										poppedOperator = operators.pop();
 									}
 
-									if (!operators.empty() && operators.peek() == '.') {
-										// operand ( case
-										// operators.pop()
-										// NFA firstOperandNFA = operands.pop();
-										// NFA secondOperandNFA =
-										// operands.pop();
-										// NFA resultNFA =
-										// NFAconcat(firstOperandNFA,
-										// secondOperandNFA);
-										// operands.push(resultNFA);
-									}
+									/* wrong test case a (a)*, would make start on a(a) not (a) only
+									 * if (!operators.empty() &&
+									 * operators.peek() == '.') { // operand (
+									 * case // operators.pop() // NFA
+									 * firstOperandNFA = operands.pop(); // NFA
+									 * secondOperandNFA = // operands.pop(); //
+									 * NFA resultNFA = //
+									 * NFAconcat(firstOperandNFA, //
+									 * secondOperandNFA); //
+									 * operands.push(resultNFA); }
+									 */
 								} else if (operators.isEmpty()
 										|| operators.peek() == '('
 										|| operator == '(') { // | (
@@ -218,27 +218,29 @@ public class Main {
 							}
 						}
 					}
-					
-					// empty the operators stack 
-					while( !operators.isEmpty() ){
+
+					// empty the operators stack
+					while (!operators.isEmpty()) {
 						Character operator = operators.pop();
 						// NFA firstOperandNFA = operands.pop();
 						// NFA secondOperandNFA = operands.pop();
 						// if(operator == '|'){
-						// 	NFA resultNFA = NFAor(firstOperandNFA, secondOperandNFA);
+						// NFA resultNFA = NFAor(firstOperandNFA,
+						// secondOperandNFA);
 						// } else if( operator == '.' ) {
-						// 	NFA resultNFA = NFAconcat(firstOperandNFA, secondOperandNFA);
+						// NFA resultNFA = NFAconcat(firstOperandNFA,
+						// secondOperandNFA);
 						// }
 						// operands.push(resultNFA);
 					}
 					// NFA resultNFA = operands.pop();
 
 					// if (isDefinition) {
-					//	definitions.put(line.substring(0, line.indexOf('='))
-					//			.trim(), resultNFA);
+					// definitions.put(line.substring(0, line.indexOf('='))
+					// .trim(), resultNFA);
 					// } else {
-					//	Put in symbol table
-					// 
+					// Put in symbol table
+					//
 					// }
 				}
 				line = br.readLine();
