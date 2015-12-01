@@ -13,8 +13,8 @@ import java.util.Stack;
 
 public class Main {
 	private static HashMap<String, String> symbolTable;
-	private static Stack<Double> operands = new Stack<Double>();
-	private static Stack<Character> operators = new Stack<Character>();
+	private static Stack<Double> operands;
+	private static Stack<Character> operators;
 	private static Character[] seps = { ' ', '-', '|', '+', '*', '(', ')' };
 	private static ArrayList<Character> separators = new ArrayList<Character>(
 			Arrays.asList(seps));
@@ -88,6 +88,8 @@ public class Main {
 
 					// Parse tokens with precedence
 					String token;
+					operands = new Stack<Double>();
+					operators = new Stack<Character>();
 					for (int i = 0; i < lineTokens.size(); i++) {
 						token = lineTokens.get(i);
 						if (isOperator(token)) { // operator
@@ -218,6 +220,20 @@ public class Main {
 							}
 						}
 					}
+					
+					// empty the operators stack 
+					while( !operators.isEmpty() ){
+						// Character operator = operators.pop();
+						// NFA firstOperandNFA = operands.pop();
+						// NFA secondOperandNFA = operands.pop();
+						// if(operator == '|'){
+						// 	NFA resultNFA = NFAor(firstOperandNFA, secondOperandNFA);
+						// } else if( operator == '.' ) {
+						// 	NFA resultNFA = NFAconcat(firstOperandNFA, secondOperandNFA);
+						// }
+						// operands.push(resultNFA);
+					}
+					// NFA resultNFA = operands.pop();
 				}
 				line = br.readLine();
 			}
