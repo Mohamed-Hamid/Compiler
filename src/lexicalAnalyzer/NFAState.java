@@ -4,9 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NFAState {
+	public static final Character EPSILON = null;
+	private boolean last;
 	private HashMap<Character, ArrayList<NFAState>> next;
+	
+	public NFAState(){
+		next = new HashMap<>();
+		last = false;
+	}
 
-	public void addNext(NFAState nfaState, Character nextChar) {
+	/* Adds an edge on input nextChar to state nfaState */
+	public void addTransition(NFAState nfaState, Character nextChar) {
 		ArrayList<NFAState> states;
 		if (next.containsKey(nextChar)) {
 			states = next.get(nextChar);
@@ -15,6 +23,28 @@ public class NFAState {
 			next.put(nextChar, states);
 		}
 		states.add(nfaState);
+	}
+	
+	/* Adds an edge on empty char to state nfaState */
+	public void addEpsilonTranisition(NFAState nfaState) {
+		this.addTransition(nfaState, NFAState.EPSILON);
+	}
+
+	@Override 
+	public String toString() {
+	    StringBuilder result = new StringBuilder();
+	    for (Character nextChar: next.keySet()){
+            result.append(nextChar);  
+		} 
+	    return result.toString();
+	  }
+
+	public boolean isLast() {
+		return last;
+	}
+
+	public void setLast(boolean last) {
+		this.last = last;
 	}
 
 }
