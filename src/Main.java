@@ -110,7 +110,7 @@ public class Main {
 								// Check for concatenation after + * )
 								if (operator == '+' || operator == '*' || operator == ')') {
 									if (!isOperator(nextToken) || nextToken.equals("(")) {
-										System.out.println("CONCAT case [+*)].operand OR ).(: " + nextToken);
+										// System.out.println("CONCAT case [+*)].operand OR ).(: " + nextToken);
 										parseOperator('.');
 									}
 								}
@@ -118,7 +118,7 @@ public class Main {
 
 							// System.out.println("or: " + token);
 						} else { // operand
-							// System.out.println("od: " + token);
+							System.out.println("od: " + token);
 							NFA operandNFA = getOperandNFA(token);
 							operands.push(operandNFA);
 
@@ -126,10 +126,10 @@ public class Main {
 							if (i + 1 < lineTokens.size()) {
 								String nextToken = lineTokens.get(i + 1);
 								if (!isOperator(nextToken)) {
-									System.out.println("CONCAT case operand.operand: " + nextToken);
+									// System.out.println("CONCAT case operand.operand: " + nextToken);
 									parseOperator('.');
 								} else if (nextToken.equals("(")) {
-									System.out.println("CONCAT case operand.(: " + nextToken);
+									// System.out.println("CONCAT case operand.(: " + nextToken);
 									parseOperator('.');
 								}
 							}
@@ -167,6 +167,7 @@ public class Main {
 		if (definitions.containsKey(token)) {
 			operandNFA = definitions.get(token);
 		} else {
+			token = token.replace("\\", "");
 			operandNFA = new NFA();
 		}
 		return operandNFA;
