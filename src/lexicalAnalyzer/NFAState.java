@@ -5,11 +5,14 @@ import java.util.HashMap;
 
 public class NFAState {
 	public static final Character EPSILON = 'E';
+	private static int count = 1;
+	private int num;
 	private boolean last;
 	public HashMap<Character, ArrayList<NFAState>> next;
 	
 	public NFAState(){
 		next = new HashMap<>();
+		num = count++;
 		last = false;
 	}
 
@@ -32,11 +35,12 @@ public class NFAState {
 
 	@Override 
 	public String toString() {
-	    StringBuilder result = new StringBuilder();
-	    for (Character nextChar: next.keySet()){
-            result.append(nextChar);  
-		} 
-	    return result.toString();
+//	    StringBuilder result = new StringBuilder();
+//	    for (Character nextChar: next.keySet()){
+//            result.append(nextChar + " - ");  
+//		} 
+//	    return result.toString();
+		return num + "";
 	  }
 
 	public boolean isLast() {
