@@ -16,14 +16,13 @@ public class Main {
 		NFA rulesNFA = InfixEvaluator.getRulesNFA(filePath);
 
 		NFAState DFAState = new NFAState();
-
 		Queue<NFAState> toExpandState = new LinkedList<NFAState>();
 		toExpandState.add(DFAState);
 
 		HashMap<NFAState, HashSet<NFAState>> DFAStateSet = new HashMap<NFAState, HashSet<NFAState>>();
 
 		HashSet<NFAState> epsilonTransitions = new HashSet<NFAState>();
-		epsilonTransitions.addAll(rulesNFA.getInputState().next.get(null));
+		epsilonTransitions.addAll(getEpsilonTransitions(rulesNFA.getInputState()));
 		epsilonTransitions.add(rulesNFA.getInputState());
 		DFAStateSet.put(DFAState, epsilonTransitions);
 
@@ -40,15 +39,12 @@ public class Main {
 
 						inputTransitions.addAll(state.next.get(nextEdge));// input transitions without epsilons
 						for (NFAState nextState : state.next.get(nextEdge)) {
-							if (nextState.next.containsKey(null)) {
-								inputTransitions.addAll(nextState.next.get(null)); // input transitions with epsilons
-							}
+							inputTransitions.addAll(getEpsilonTransitions(nextState));
 						}
 
 						if (DFANext.containsKey(nextEdge)) { // if a previous state had an input transition on this edge
 							HashSet<NFAState> oldInputTransitions = DFANext.get(nextEdge);
 							oldInputTransitions.addAll(inputTransitions);
-							// DFANext.put(nextEdge, oldInputTransitions); Useless because hashset has the same reference, so it is updated automatically
 						} else { // else this is the first state in DFA states to have this input transition
 							DFANext.put(nextEdge, inputTransitions);
 							// CHECK LATER,
@@ -67,5 +63,23 @@ public class Main {
 		}
 
 		System.out.println("end");
+	}
+
+	// gets epsilon transitions on nested levels by BFS
+	private static HashSet<NFAState> getEpsilonTransitions(NFAState state) {
+		Queue<NFAState> toExpandState = new LinkedList<NFAState>();
+		toExpandState.add(state);
+
+		HashSet<NFAState> epsilonTransitions = new HashSet<NFAState>();
+		while (!toExpandState.isEmpty()) {
+			NFAState currentState = toExpandState.poll();
+
+			if (currentState.next.containsKey(null)) {
+				epsilonTransitions.addAll(currentState.next.get(null));
+				toExpandState.addAll(currentState.next.get(null));
+			}
+		}
+
+		return epsilonTransitions;
 	}
 }
