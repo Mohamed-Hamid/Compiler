@@ -55,7 +55,7 @@ public class Main {
 							NFAState newDFAState = new NFAState();
 							HashSet<NFAState> shouldntBeAHS = new HashSet<NFAState>();
 							shouldntBeAHS.add(newDFAState);
-							DFAState.next.put(nextEdge, shouldntBeAHS);
+							currentDFAState.next.put(nextEdge, shouldntBeAHS);
 
 							DFAStateSet.put(newDFAState, inputTransitions);
 
