@@ -189,13 +189,13 @@ public class InfixEvaluator {
 			while (true) {
 
 				if (currentPrecedence <= stackPeekPrecedence && stackPeek != '(') {
-					NFA firstOperandNFA = operands.pop();
+					NFA secondOperandNFA = operands.pop();
 					NFA resultNFA;
 					if (stackPeek == '.' | stackPeek == '|') {
-						NFA secondOperandNFA = operands.pop();
+						NFA firstOperandNFA = operands.pop();
 						resultNFA = generateNFA(stackPeek, firstOperandNFA, secondOperandNFA);
 					} else {
-						resultNFA = generateNFA(stackPeek, firstOperandNFA, null);
+						resultNFA = generateNFA(stackPeek, secondOperandNFA, null);
 					}
 					operands.push(resultNFA);
 					operators.pop();
@@ -214,13 +214,13 @@ public class InfixEvaluator {
 		Character poppedOperator = operators.pop();
 		while (poppedOperator != '(') {
 
-			NFA firstOperandNFA = operands.pop();
+			NFA secondOperandNFA = operands.pop();
 			NFA resultNFA;
 			if (poppedOperator == '.' | poppedOperator == '|') {
-				NFA secondOperandNFA = operands.pop();
+				NFA firstOperandNFA = operands.pop();
 				resultNFA = generateNFA(poppedOperator, firstOperandNFA, secondOperandNFA);
 			} else {
-				resultNFA = generateNFA(poppedOperator, firstOperandNFA, null);
+				resultNFA = generateNFA(poppedOperator, secondOperandNFA, null);
 			}
 
 			operands.push(resultNFA);
@@ -254,12 +254,12 @@ public class InfixEvaluator {
 	private static void executeStack() {
 		while (!operators.isEmpty()) {
 			Character operator = operators.pop();
-			NFA firstOperandNFA = operands.pop();
+			NFA secondOperandNFA = operands.pop();
 			if (operator == '.' | operator == '|') {
-				NFA secondOperandNFA = operands.pop();
+				NFA firstOperandNFA = operands.pop();
 				operands.push(generateNFA(operator, firstOperandNFA, secondOperandNFA));
 			} else {
-				operands.push(generateNFA(operator, firstOperandNFA, null));
+				operands.push(generateNFA(operator, secondOperandNFA, null));
 			}
 		}
 	}
