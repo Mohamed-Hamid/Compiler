@@ -234,7 +234,7 @@ public class InfixEvaluator {
 		switch (operator) {
 		// CHANGE:
 		case '.':
-			resultantNFA = NFABuilder.concat(operand1, operand1);
+			resultantNFA = NFABuilder.concat(operand1, operand2);
 			break;
 		case '|':
 			// NFAor(operands1, operand2);
