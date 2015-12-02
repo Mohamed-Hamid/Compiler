@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,25 +17,20 @@ public class Main {
 
 		NFAState DFAState = new NFAState();
 
-		int i = 1;
-
 		Queue<NFAState> toExpandState = new LinkedList<NFAState>();
-		toExpandState.add(rulesNFA.getInputState());
+		toExpandState.add(DFAState);
 
 		HashMap<NFAState, HashSet<NFAState>> DFAStateSet = new HashMap<NFAState, HashSet<NFAState>>();
+
+		HashSet<NFAState> epsilonTransitions = new HashSet<NFAState>();
+		epsilonTransitions.addAll(rulesNFA.getInputState().next.get(null));
+		epsilonTransitions.add(rulesNFA.getInputState());
+		DFAStateSet.put(DFAState, epsilonTransitions);
+
 		while (!toExpandState.isEmpty()) {
 			NFAState currentDFAState = toExpandState.poll();
-			boolean flag = true;
 
-			HashSet<NFAState> epsilonTransitions = new HashSet<NFAState>();
-			if (i == 1 && currentDFAState.next.containsKey(null)) {
-				epsilonTransitions.addAll(currentDFAState.next.get(null));
-			}
-			if (i == 1) {
-				epsilonTransitions.add(currentDFAState);
-			} else {
-				epsilonTransitions = DFAStateSet.get(currentDFAState);
-			}
+			epsilonTransitions = DFAStateSet.get(currentDFAState);
 
 			HashMap<Character, HashSet<NFAState>> DFANext = new HashMap<Character, HashSet<NFAState>>();
 			for (NFAState state : epsilonTransitions) { // Each state in current DFA states
@@ -70,12 +64,6 @@ public class Main {
 					}
 				}
 			}
-
-			// DFAState.next = DFANext;
-			if (flag) {
-				// break;
-			}
-			i++;
 		}
 
 		System.out.println("end");
