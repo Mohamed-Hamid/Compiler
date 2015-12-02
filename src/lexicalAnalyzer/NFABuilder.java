@@ -53,10 +53,11 @@ public class NFABuilder {
 	public static final NFA kleeneStar(NFA nfa) {
 		NFA newNFA = new NFA(nfa.getInputState(), nfa.getOutputState());
 		newNFA.getOutputState().addEpsilonTranisition(nfa.getInputState());
-        newNFA.getInputState().addEpsilonTranisition(nfa.getOutputState());;
+        newNFA.getInputState().addEpsilonTranisition(nfa.getOutputState());
 		return newNFA;	
     }
 	
+	//TODO: Complete this to reuse kleeneStar -> Implement Deep copy of an NFA
 	/* Kleene Closure */
 	public static final NFA kleenePlus(NFA nfa) {
 		return concat(nfa, kleeneStar(nfa));

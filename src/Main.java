@@ -19,6 +19,9 @@ public class Main {
 	private static HashMap<String, NFA> expressions = new HashMap<String, NFA>();
 
 	public static void main(String[] args) throws Exception {
+//		NFA nfa = NFABuilder.concat(NFABuilder.or(NFABuilder.kleeneStar(NFABuilder.c('A')), NFABuilder.c('B')), NFABuilder.c('M'));
+		//First path:
+//		System.out.println(nfa.getInputState().next.get(null).get(0).next.get('A').get(0).next.get(null).get(1).next.get(null).get(0).next);
 		symbolTable = new HashMap<String, String>();
 		try (BufferedReader br = new BufferedReader(new FileReader(
 				"/home/hamid/Desktop/rules.txt"))) {

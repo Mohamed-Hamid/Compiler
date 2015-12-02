@@ -7,6 +7,10 @@ public class NFA {
 		this.inputState = inputState;
 		this.outputState = outputState;
 	}
+	
+	//TODO: Complete this
+	public NFA(NFA otherNFA){
+	}
 
 	public NFAState getInputState() {
 		return inputState;

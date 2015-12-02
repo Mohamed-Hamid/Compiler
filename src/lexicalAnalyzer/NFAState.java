@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NFAState {
-	public static final Character EPSILON = 'L';
+	public static final Character EPSILON = null;
 	private static int count = 1;
 	private int num;
 	private boolean last;
@@ -14,6 +14,13 @@ public class NFAState {
 		next = new HashMap<>();
 		num = count++;
 		last = false;
+	}
+	
+	//Build an NFA state from another
+	public NFAState(NFAState otherNFAState){
+		next = new HashMap<>(otherNFAState.next);
+		num = count++;
+		last = otherNFAState.isLast();
 	}
 
 	/* Adds an edge on input nextChar to state nfaState */
@@ -35,11 +42,6 @@ public class NFAState {
 
 	@Override 
 	public String toString() {
-//	    StringBuilder result = new StringBuilder();
-//	    for (Character nextChar: next.keySet()){
-//            result.append(nextChar + " - ");  
-//		} 
-//	    return result.toString();
 		return num + "";
 	  }
 
