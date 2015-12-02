@@ -1,14 +1,14 @@
 package lexicalAnalyzer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class NFAState {
 	public static final Character EPSILON = null;
 	private static int count = 1;
 	private int num;
 	private boolean last;
-	public HashMap<Character, ArrayList<NFAState>> next;
+	public HashMap<Character, HashSet<NFAState>> next;
 	
 	public NFAState(){
 		next = new HashMap<>();
@@ -25,11 +25,11 @@ public class NFAState {
 
 	/* Adds an edge on input nextChar to state nfaState */
 	public void addTransition(NFAState nfaState, Character nextChar) {
-		ArrayList<NFAState> states;
+		HashSet<NFAState> states;
 		if (next.containsKey(nextChar)) {
 			states = next.get(nextChar);
 		} else {
-			states = new ArrayList<NFAState>();
+			states = new HashSet<NFAState>();
 			next.put(nextChar, states);
 		}
 		states.add(nfaState);
