@@ -39,8 +39,10 @@ public class InfixEvaluator {
 					for (int i = 1; i < line.length() - 1; i++) {
 						char parsedChar = line.charAt(i);
 						if (parsedChar != '\\' && parsedChar != ' ') {
+							NFA punctuationNFA = NFABuilder.c(parsedChar);
 							symbolTable.put(parsedChar + "", parsedChar + "_PUNCT");
-							expressions.put(parsedChar + "", NFABuilder.c(parsedChar)); // CHANGE: call character NFA
+							expressions.put(parsedChar + "", punctuationNFA);
+							punctuationNFA.getOutputState().setAcceptingString(parsedChar + "");
 						}
 					}
 				} else { // Expressions OR Definitions
