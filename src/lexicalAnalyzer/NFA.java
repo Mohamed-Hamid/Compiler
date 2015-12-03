@@ -42,7 +42,6 @@ public class NFA implements Cloneable{
 	    if(this.inputState.isLast()){
 	    	clonedNFAState.setLast(true);
 	    }
-	    
 	    return new NFA(clonedNFAState, this.outputState);
 	}
 	
