@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class NFA implements Cloneable{
 	private NFAState inputState, outputState;
-	private ArrayList<NFAState> visitedStates; //for deep copying an NFA
+	private static ArrayList<NFAState> visitedStates; //for deep copying an NFA
 	
 	public NFA(NFAState inputState, NFAState outputState){
 		this.inputState = inputState;
@@ -20,12 +20,14 @@ public class NFA implements Cloneable{
 	
 	// helper for deep cloning an NFA
 	private NFA deepCopy(){
+		visitedStates.add(this.inputState);
 		NFAState clonedNFAState = new NFAState();
 		HashMap<Character, ArrayList<NFAState>> tempNext = new HashMap<>();
 		clonedNFAState.next = tempNext;
 	    for(Character c : this.inputState.next.keySet()){
 	    	ArrayList<NFAState> tempNextHash = new ArrayList<>();
 	    	for(NFAState nfaState : this.inputState.next.get(c)){
+	    		if(visitedStates.contains(nfaState)) continue;
 	    		tempNextHash.add((NFAState)((NFA)(new NFA(nfaState, this.outputState)).deepCopy()).inputState);
 	    	}
 	    	tempNext.put(c, tempNextHash);
@@ -35,7 +37,9 @@ public class NFA implements Cloneable{
 	    }
 	    return new NFA(clonedNFAState, this.outputState);
 	}
-
+	
+	/** Getters and Setters **/
+	
 	public NFAState getInputState() {
 		return inputState;
 	}

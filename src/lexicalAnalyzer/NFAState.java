@@ -71,11 +71,13 @@ public class NFAState implements Cloneable{
 		StringBuilder result = new StringBuilder();
 		for(Character c : next.keySet()){
 			for(NFAState nfaState : next.get(c)){
-				result.append(this.num + " --" + c + "--> " + nfaState.num);
+				result.append(this.num + " --" + c + "--> " + nfaState.num + "\n");
 			}
 		}
 		return result.toString();
 	  }
+	
+	/** Getters and Setters **/
 
 	public boolean isLast() {
 		return last;
