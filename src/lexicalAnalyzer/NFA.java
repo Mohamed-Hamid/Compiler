@@ -5,28 +5,28 @@ import java.util.HashMap;
 
 public class NFA implements Cloneable{
 	private NFAState inputState, outputState;
+	private ArrayList<NFAState> visitedStates; //for deep copying an NFA
 	
 	public NFA(NFAState inputState, NFAState outputState){
 		this.inputState = inputState;
 		this.outputState = outputState;
 	}
 	
-	public NFA(NFA otherNFA) throws CloneNotSupportedException{
-//	    this.inputState = new NFAState(otherNFA.inputState);
-//	    this.outputState = new NFAState(otherNFA.outputState);
-//		this.inputState = (NFAState) otherNFA.inputState.clone();
-//		this.inputState = (NFAState) otherNFA.clone();
-	}
-	
 	@Override
     public Object clone() throws CloneNotSupportedException {
+		visitedStates = new ArrayList<>();
+		return deepCopy();
+    }
+	
+	// helper for deep cloning an NFA
+	private NFA deepCopy(){
 		NFAState clonedNFAState = new NFAState();
 		HashMap<Character, ArrayList<NFAState>> tempNext = new HashMap<>();
 		clonedNFAState.next = tempNext;
 	    for(Character c : this.inputState.next.keySet()){
 	    	ArrayList<NFAState> tempNextHash = new ArrayList<>();
 	    	for(NFAState nfaState : this.inputState.next.get(c)){
-	    		tempNextHash.add((NFAState)((NFA)(new NFA(nfaState, this.outputState)).clone()).inputState);
+	    		tempNextHash.add((NFAState)((NFA)(new NFA(nfaState, this.outputState)).deepCopy()).inputState);
 	    	}
 	    	tempNext.put(c, tempNextHash);
 	    }
@@ -34,7 +34,7 @@ public class NFA implements Cloneable{
 	    	clonedNFAState.setLast(true);
 	    }
 	    return new NFA(clonedNFAState, this.outputState);
-    }
+	}
 
 	public NFAState getInputState() {
 		return inputState;
