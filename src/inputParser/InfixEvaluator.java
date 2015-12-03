@@ -162,10 +162,10 @@ public class InfixEvaluator {
 		return token.length() == 1 && separators.contains(token.charAt(0));
 	}
 
-	private static NFA getOperandNFA(String token) {
+	private static NFA getOperandNFA(String token) throws CloneNotSupportedException {
 		NFA operandNFA;
 		if (definitions.containsKey(token)) {
-			operandNFA = definitions.get(token);
+			operandNFA = (NFA) definitions.get(token).clone();
 		} else {
 			token = token.replace("\\", "");
 			operandNFA = NFABuilder.s(token);
