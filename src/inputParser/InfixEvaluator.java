@@ -81,7 +81,7 @@ public class InfixEvaluator {
 								char begin = lineTokens.get(i - 1).charAt(0), end = lineTokens.get(i + 1).charAt(0);
 								i++;
 
-								char index = (char) begin;
+								char index = begin;
 								// CHANGE: NFA tempNFA = NFA(begin.toString());
 								/* NFA tempNFA = new NFA(); */
 								ArrayList<Character> rangeChars = new ArrayList<>();

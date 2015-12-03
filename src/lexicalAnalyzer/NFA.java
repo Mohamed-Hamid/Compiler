@@ -33,8 +33,8 @@ public class NFA implements Cloneable{
 	    		if(visitedStates.contains(nfaState)){
 	    			tempNextHash.add(originalCloneMapping.get(nfaState));
 	    		} else { //recurse more
-	    			NFA subNFA = ((NFA)(new NFA(nfaState, this.outputState)).deepCopy());
-	    			tempNextHash.add((NFAState)subNFA.inputState);
+	    			NFA subNFA = ((new NFA(nfaState, this.outputState)).deepCopy());
+	    			tempNextHash.add(subNFA.inputState);
 	    		}
 	    	}
 	    	tempNext.put(c, tempNextHash);
