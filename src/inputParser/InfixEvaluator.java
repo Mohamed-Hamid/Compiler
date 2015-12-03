@@ -77,7 +77,7 @@ public class InfixEvaluator {
 								// specially treated operator, no precedence rules, may be implemented in a neat way later
 								char begin = lineTokens.get(i - 1).charAt(0), end = lineTokens.get(i + 1).charAt(0);
 								i++;
-								// operands.pop();
+								
 								char index = (char) begin;
 								// CHANGE: NFA tempNFA = NFA(begin.toString());
 								/* NFA tempNFA = new NFA(); */
@@ -90,6 +90,7 @@ public class InfixEvaluator {
 								}
 								System.out.println(" * " + rangeChars + " * ");
 								NFA tempNFA = NFABuilder.or(rangeChars.toArray());
+								operands.pop(); // remove the first character of the range operator from stack
 								operands.push(tempNFA);
 							} else {
 								// operators: * + | ( ) .
@@ -149,7 +150,7 @@ public class InfixEvaluator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		} 
+		}
 	}
 
 	private static boolean isOperator(String token) {
