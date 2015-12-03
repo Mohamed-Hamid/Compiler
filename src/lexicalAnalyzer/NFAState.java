@@ -6,7 +6,7 @@ import java.util.HashSet;
 public class NFAState {
 	public static final Character EPSILON = null;
 	private static int count = 1;
-	private int num;
+	public int num;
 	private boolean last;
 	public HashMap<Character, HashSet<NFAState>> next;
 	
