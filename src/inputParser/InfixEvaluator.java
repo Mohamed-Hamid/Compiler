@@ -138,12 +138,10 @@ public class InfixEvaluator {
 
 					if (isDefinition) {
 						definitions.put(LHSName, resultNFA);
-						
 					} else {
 						symbolTable.put(LHSName, LHSName.toUpperCase());
 						expressions.put(LHSName, resultNFA);
-						System.out.println(LHSName);
-						System.out.println(resultNFA.getOutputState());
+						resultNFA.getOutputState().setAcceptingString(LHSName);
 					}
 				}
 				line = br.readLine();
