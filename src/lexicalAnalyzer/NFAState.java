@@ -71,7 +71,7 @@ public class NFAState implements Cloneable{
 		StringBuilder result = new StringBuilder();
 		for(Character c : next.keySet()){
 			for(NFAState nfaState : next.get(c)){
-				result.append(this.num + " --" + c + "--> " + nfaState.num + "\n");
+				result.append(this.num + " --" + c + "--> " + nfaState.num + " || ");
 			}
 		}
 		return result.toString();
