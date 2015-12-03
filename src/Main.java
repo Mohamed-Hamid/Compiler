@@ -17,7 +17,7 @@ public class Main {
 		NFA n1 = NFABuilder.kleeneStar(NFABuilder.c('1'));
 		NFA n2 = (NFA) n1.clone();
 		System.out.println(n1.getInputState().next.get('1').get(0));
-		System.out.println(n2.getInputState());
+		System.out.println(n2.getInputState().next.get('1').get(0));
 //		System.out.println(n2.getInputState().next.get('1').get(0).next);
 //		System.out.println(n1.getInputState().next.get('1').get(0).next.get(null).get(0).next.get('2').get(0).isLast());
 //		System.out.println(n2.getInputState().next.get('1').get(0).next.get(null).get(0).next.get('2').get(0).isLast());
