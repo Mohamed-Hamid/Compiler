@@ -27,5 +27,5 @@ public class NFA {
 	public void setOutputState(NFAState outputState) {
 		this.outputState = outputState;
 	}
-	
+
 }
