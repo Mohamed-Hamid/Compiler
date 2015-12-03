@@ -15,8 +15,6 @@ public class Main {
 		// A+B | C*
 //		NFA nfa = NFABuilder.or((NFABuilder.concat( NFABuilder.kleenePlus(NFABuilder.c('A')), NFABuilder.c('B'))), (
 //				NFABuilder.kleeneStar(NFABuilder.c('C')) ) );
-//		System.out.println(nfa.getInputState().next.get(null).get(0).next.get('A').
-//				get(0).next.get(null).get(0).next.get('A').get(0).
-//				next.get(null).get(1).next.get('B').get(0).next.get(null).get(0).isLast());
+//		System.out.println(nfa.getInputState().next);
 	}
 }

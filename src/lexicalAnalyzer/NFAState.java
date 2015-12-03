@@ -16,38 +16,6 @@ public class NFAState implements Cloneable{
 		num = count++;
 		last = false;
 	}
-	
-	//Build an NFA state from another
-/*	public NFAState(NFAState otherNFAState){
-		HashMap<Character, ArrayList<NFAState>> tempNext = new HashMap<>();
-	    for(Character c : otherNFAState.next.keySet()){
-	    	ArrayList<NFAState> tempNextHash = new ArrayList<>();
-	    	for(NFAState nfaState : otherNFAState.next.get(c)){
-	    		tempNextHash.add(new NFAState(nfaState));
-	    	}
-	    	tempNext.put(c, tempNextHash);
-	    }
-	    num = count++;
-	    last = otherNFAState.isLast();
-	}
-	*/
-//	@Override
-//    public Object clone() throws CloneNotSupportedException {
-//		NFAState clonedNFAState = new NFAState();
-//		HashMap<Character, ArrayList<NFAState>> tempNext = new HashMap<>();
-//		clonedNFAState.next = tempNext;
-//	    for(Character c : this.next.keySet()){
-//	    	ArrayList<NFAState> tempNextHash = new ArrayList<>();
-//	    	for(NFAState nfaState : this.next.get(c)){
-//	    		tempNextHash.add((NFAState) nfaState.clone());
-//	    	}
-//	    	tempNext.put(c, tempNextHash);
-//	    }
-////	    clonedNFAState.num = count++;
-////	    clonedNFAState.last = this.isLast();
-//	    if(last) System.out.println(clonedNFAState.num);
-//	    return clonedNFAState;
-//    }
 
 	/* Adds an edge on input nextChar to state nfaState */
 	public void addTransition(NFAState nfaState, Character nextChar) {
@@ -69,15 +37,14 @@ public class NFAState implements Cloneable{
 
 	@Override 
 	public String toString() {
-		return this.num + "";
-//		StringBuilder result = new StringBuilder();
-//		for(Character c : next.keySet()){
-//			System.out.println("*");
-//			for(NFAState nfaState : next.get(c)){
-//				result.append(this.num + " --" + c + "--> " + nfaState.num + " || ");
-//			}
-//		}
-//		return result.toString();
+		StringBuilder result = new StringBuilder();
+		result.append("(State " + this.num + ")");
+		for(Character c : next.keySet()){
+			for(NFAState nfaState : next.get(c)){
+				result.append(this.num + "--" + c + "--> " + nfaState.num + "  ");
+			}
+		}
+		return result.toString();
 	  }
 	
 	/** Getters and Setters **/
