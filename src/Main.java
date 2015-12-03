@@ -9,7 +9,7 @@ public class Main {
 		String filePath = os.startsWith("Windows") ? "C:\\Users\\electric\\Dropbox\\College\\Term 9\\Programming Languages Translation\\Project phase 1\\rules.txt"
 				: "/home/hamid/Desktop/rules.txt";
 		NFA rulesNFA = InfixEvaluator.getRulesNFA(filePath);
-		NFAState DFAFinalState = DFAState.generateDFA(rulesNFA);
-		DFAState.print(DFAFinalState);
+		DFAState DFAInitialState = DFAState.generateDFA(rulesNFA);
+		DFAState.print(DFAInitialState);
 	}
 }

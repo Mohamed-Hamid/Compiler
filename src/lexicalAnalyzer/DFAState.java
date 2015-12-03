@@ -7,20 +7,29 @@ import java.util.Queue;
 
 public class DFAState {
 
-	public static NFAState generateDFA(NFA rulesNFA) {
-		NFAState DFAState = new NFAState();
-		Queue<NFAState> toExpandState = new LinkedList<NFAState>();
-		toExpandState.add(DFAState);
+	private static int count = 1;
+	private int num;
+	public HashMap<Character, DFAState> next;
 
-		HashMap<NFAState, HashSet<NFAState>> DFAStateSet = new HashMap<NFAState, HashSet<NFAState>>();
+	public DFAState() {
+		this.next = new HashMap<Character, DFAState>();
+		this.num = count++;
+	}
+
+	public static DFAState generateDFA(NFA rulesNFA) {
+		DFAState DFAInitialState = new DFAState();
+		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
+		toExpandState.add(DFAInitialState);
+
+		HashMap<DFAState, HashSet<NFAState>> DFAStateSet = new HashMap<DFAState, HashSet<NFAState>>();
 
 		HashSet<NFAState> epsilonTransitions = new HashSet<NFAState>();
 		epsilonTransitions.addAll(getEpsilonTransitions(rulesNFA.getInputState()));
 		epsilonTransitions.add(rulesNFA.getInputState());
-		DFAStateSet.put(DFAState, epsilonTransitions);
+		DFAStateSet.put(DFAInitialState, epsilonTransitions);
 
 		while (!toExpandState.isEmpty()) {
-			NFAState currentDFAState = toExpandState.poll();
+			DFAState currentDFAState = toExpandState.poll();
 
 			epsilonTransitions = DFAStateSet.get(currentDFAState);
 
@@ -40,11 +49,9 @@ public class DFAState {
 							oldInputTransitions.addAll(inputTransitions);
 						} else { // else this is the first state in DFA states to have this input transition
 							DFANext.put(nextEdge, inputTransitions);
-							// CHECK LATER,
-							NFAState newDFAState = new NFAState();
-							HashSet<NFAState> shouldntBeAHS = new HashSet<NFAState>();
-							shouldntBeAHS.add(newDFAState);
-							currentDFAState.next.put(nextEdge, shouldntBeAHS);
+							// CHECK LATER, Remove duplicates in minimal DFA
+							DFAState newDFAState = new DFAState();
+							currentDFAState.next.put(nextEdge, newDFAState);
 
 							DFAStateSet.put(newDFAState, inputTransitions);
 
@@ -55,7 +62,7 @@ public class DFAState {
 			}
 		}
 
-		return DFAState;
+		return DFAInitialState;
 	}
 
 	// gets epsilon transitions on nested levels by BFS
@@ -76,18 +83,23 @@ public class DFAState {
 		return epsilonTransitions;
 	}
 
-	public static void print(NFAState state) {
-		Queue<NFAState> toExpandState = new LinkedList<NFAState>();
+	public static void print(DFAState state) {
+		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
 		toExpandState.add(state);
 
 		while (!toExpandState.isEmpty()) {
-			NFAState currentState = toExpandState.poll();
+			DFAState currentState = toExpandState.poll();
 			System.out.print("Num: " + currentState.num + " ");
 			System.out.println(currentState.next);
 			for (Character c : currentState.next.keySet()) {
-				toExpandState.addAll( currentState.next.get(c));
+				toExpandState.add(currentState.next.get(c));
 			}
-			
+
 		}
+	}
+
+	@Override
+	public String toString() {
+		return num + "";
 	}
 }
