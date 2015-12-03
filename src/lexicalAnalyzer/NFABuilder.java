@@ -57,6 +57,17 @@ public class NFABuilder {
 		return newNFA;	
     }
 	
+
+	public static NFAState combine(Object[] objects) {
+		NFAState inputState = new NFAState();
+		for(Object NFAinstance: objects){
+			inputState.addEpsilonTranisition(((NFA) NFAinstance).getInputState());
+		}
+		
+		return inputState;
+	}
+
+	
 	//TODO: Complete this to reuse kleeneStar -> Implement Deep copy of an NFA
 	/* Kleene Closure */
 	public static final NFA kleenePlus(NFA nfa) {

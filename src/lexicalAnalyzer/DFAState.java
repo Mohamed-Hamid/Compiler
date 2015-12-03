@@ -17,7 +17,7 @@ public class DFAState {
 		this.num = count++;
 	}
 
-	public static DFAState generateDFA(NFA rulesNFA) {
+	public static DFAState generateDFA(NFAState rulesNFAInitialState) {
 		DFAState DFAInitialState = new DFAState();
 		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
 		toExpandState.add(DFAInitialState);
@@ -25,8 +25,8 @@ public class DFAState {
 		HashMap<DFAState, HashSet<NFAState>> DFAStateSet = new HashMap<DFAState, HashSet<NFAState>>();
 
 		HashSet<NFAState> epsilonTransitions = new HashSet<NFAState>();
-		epsilonTransitions.addAll(getEpsilonTransitions(rulesNFA.getInputState()));
-		epsilonTransitions.add(rulesNFA.getInputState());
+		epsilonTransitions.addAll(getEpsilonTransitions(rulesNFAInitialState));
+		epsilonTransitions.add(rulesNFAInitialState);
 		DFAStateSet.put(DFAInitialState, epsilonTransitions);
 
 		while (!toExpandState.isEmpty()) {

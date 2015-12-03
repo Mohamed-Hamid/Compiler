@@ -18,7 +18,7 @@ public class InfixEvaluator {
 	private static HashMap<String, NFA> definitions = new HashMap<String, NFA>();
 	private static HashMap<String, NFA> expressions = new HashMap<String, NFA>();
 
-	public static NFA getRulesNFA(String filePath) throws Exception {
+	public static NFAState getRulesNFA(String filePath) throws Exception {
 		// NFA nfa = NFABuilder.concat(NFABuilder.or(NFABuilder.kleeneStar(NFABuilder.c('A')), NFABuilder.c('B')), NFABuilder.c('M'));
 		// First path:
 		// System.out.println(nfa.getInputState().next.get(null).get(0).next.get('A').get(0).next.get(null).get(1).next.get(null).get(0).next);
@@ -28,7 +28,7 @@ public class InfixEvaluator {
 			while (line != null) {
 				// Read line, separate on four cases { , [ , expression, definition
 				if (line.charAt(0) == '{') {
-					String lineWithoutBrackets =  line.substring(1, line.length() - 1).trim();
+					String lineWithoutBrackets = line.substring(1, line.length() - 1).trim();
 					for (String token : lineWithoutBrackets.split(" ")) {
 						NFA stringNFA = NFABuilder.s(token);
 						expressions.put(token, stringNFA);
@@ -80,7 +80,7 @@ public class InfixEvaluator {
 								// specially treated operator, no precedence rules, may be implemented in a neat way later
 								char begin = lineTokens.get(i - 1).charAt(0), end = lineTokens.get(i + 1).charAt(0);
 								i++;
-								
+
 								char index = (char) begin;
 								// CHANGE: NFA tempNFA = NFA(begin.toString());
 								/* NFA tempNFA = new NFA(); */
@@ -148,8 +148,9 @@ public class InfixEvaluator {
 			}
 
 			// Combine each line's NFA in a single NFA
-			NFA resultantNFA = NFABuilder.or(expressions.values().toArray());
-			return resultantNFA;
+			// NFA resultantNFA = NFABuilder.or(expressions.values().toArray());
+			NFAState resultantNFAInitialState = NFABuilder.combine(expressions.values().toArray());
+			return resultantNFAInitialState;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
