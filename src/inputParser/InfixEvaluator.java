@@ -251,7 +251,12 @@ public class InfixEvaluator {
 			resultantNFA = NFABuilder.kleeneStar(operand1);
 			break;
 		case '+':
-			resultantNFA = NFABuilder.kleenePlus(operand1);
+			try {
+				resultantNFA = NFABuilder.kleenePlus(operand1);
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 		}
 		return resultantNFA;

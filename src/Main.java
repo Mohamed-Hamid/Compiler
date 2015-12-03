@@ -14,10 +14,15 @@ public class Main {
 //		NFAState rulesNFAInitialState = InfixEvaluator.getRulesNFA(filePath);
 //		DFAState DFAInitialState = DFAState.generateDFA(rulesNFAInitialState);
 //		DFAInitialState.print();
+		
 		NFA n1 = NFABuilder.concat(NFABuilder.c('1'), NFABuilder.kleeneStar(NFABuilder.c('2')));
 		NFA n2 = (NFA) n1.clone();
 		System.out.println(n1.getInputState().next.get('1').get(0).next.get(null).get(0).next);
 		System.out.println(n2.getInputState().next.get('1').get(0).next.get(null).get(0).next);
+		
+//		NFA nfa = NFABuilder.kleenePlus(NFABuilder.c('A'));
+//		System.out.println(nfa.getInputState().next);
+		
 //		System.out.println(n2.getInputState().next.get('1').get(0).next);
 //		System.out.println(n1.getInputState().next.get('1').get(0).next.get(null).get(0).next.get('2').get(0).isLast());
 //		System.out.println(n2.getInputState().next.get('1').get(0).next.get(null).get(0).next.get('2').get(0).isLast());
