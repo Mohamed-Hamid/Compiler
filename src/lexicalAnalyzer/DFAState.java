@@ -17,7 +17,7 @@ public class DFAState {
 		this.num = count++;
 	}
 
-	public static DFAState generateDFA(NFAState rulesNFAInitialState) {
+	public static DFAState generateDFA(NFAState rulesNFAInitialState) throws Exception {
 		DFAState DFAInitialState = new DFAState();
 		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
 		toExpandState.add(DFAInitialState);
@@ -28,6 +28,9 @@ public class DFAState {
 		epsilonTransitions.addAll(getEpsilonTransitions(rulesNFAInitialState));
 		epsilonTransitions.add(rulesNFAInitialState);
 		DFAStateSet.put(DFAInitialState, epsilonTransitions);
+
+		HashSet<Integer> visitedStatesNum = new HashSet<Integer>();
+		visitedStatesNum.add(DFAInitialState.num);
 
 		while (!toExpandState.isEmpty()) {
 			DFAState currentDFAState = toExpandState.poll();
@@ -51,13 +54,39 @@ public class DFAState {
 						} else { // else this is the first state in DFA states to have this input transition
 							DFANext.put(nextEdge, inputTransitions);
 							// CHECK LATER, Remove duplicates in minimal DFA
-							DFAState newDFAState = new DFAState();
-							currentDFAState.next.put(nextEdge, newDFAState);
-
-							DFAStateSet.put(newDFAState, inputTransitions);
-
-							toExpandState.add(newDFAState);
+							// DFAState newDFAState = new DFAState();
+							// currentDFAState.next.put(nextEdge, newDFAState);
+							//
+							// DFAStateSet.put(newDFAState, inputTransitions);
+							//
+							// toExpandState.add(newDFAState);
 						}
+					}
+				}
+			}
+
+			// check on DFANext if any hashset value is contained in DFAStateSet
+
+			for (Character nextEdge : DFANext.keySet()) {
+				HashSet<NFAState> newTransition = DFANext.get(nextEdge);
+				for (HashSet<NFAState> existingTransition : DFAStateSet.values()) {
+					if (areEquivalent(newTransition, existingTransition)) {
+						DFAState existingState = null;
+						for (DFAState state : DFAStateSet.keySet()) {
+							if (DFAStateSet.get(state).equals(existingTransition)) {
+								existingState = state;
+								break;
+							}
+						}
+						if (existingState == null)
+							throw new Exception("Bug");
+						currentDFAState.next.put(nextEdge, existingState);
+						break;
+					} else {
+						DFAState newDFAState = new DFAState();
+						currentDFAState.next.put(nextEdge, newDFAState);
+						DFAStateSet.put(newDFAState, newTransition);
+						toExpandState.add(newDFAState);
 					}
 				}
 			}
@@ -66,18 +95,30 @@ public class DFAState {
 		return DFAInitialState;
 	}
 
+	private static boolean areEquivalent(HashSet<NFAState> newTransition, HashSet<NFAState> existingTransition) {
+		return newTransition.containsAll(existingTransition) && newTransition.size() == existingTransition.size();
+	}
+
 	// gets epsilon transitions on nested levels by BFS
 	private static HashSet<NFAState> getEpsilonTransitions(NFAState state) {
 		Queue<NFAState> toExpandState = new LinkedList<NFAState>();
 		toExpandState.add(state);
 
 		HashSet<NFAState> epsilonTransitions = new HashSet<NFAState>();
+		HashSet<Integer> visitedStatesNum = new HashSet<Integer>();
+		visitedStatesNum.add(state.num);
+
 		while (!toExpandState.isEmpty()) {
 			NFAState currentState = toExpandState.poll();
 
 			if (currentState.next.containsKey(null)) {
-				epsilonTransitions.addAll(currentState.next.get(null));
-				toExpandState.addAll(currentState.next.get(null));
+				for (NFAState nextEpsilonsState : currentState.next.get(null)) {
+					if (!visitedStatesNum.contains(nextEpsilonsState.num)) {
+						epsilonTransitions.add(nextEpsilonsState);
+						toExpandState.add(nextEpsilonsState);
+						visitedStatesNum.add(nextEpsilonsState.num);
+					}
+				}
 			}
 		}
 
