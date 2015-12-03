@@ -58,6 +58,7 @@ public class NFAState implements Cloneable{
 			states = new ArrayList<NFAState>();
 			next.put(nextChar, states);
 		}
+		
 		states.add(nfaState);
 	}
 	
@@ -68,13 +69,15 @@ public class NFAState implements Cloneable{
 
 	@Override 
 	public String toString() {
-		StringBuilder result = new StringBuilder();
-		for(Character c : next.keySet()){
-			for(NFAState nfaState : next.get(c)){
-				result.append(this.num + " --" + c + "--> " + nfaState.num + " || ");
-			}
-		}
-		return result.toString();
+		return this.num + "";
+//		StringBuilder result = new StringBuilder();
+//		for(Character c : next.keySet()){
+//			System.out.println("*");
+//			for(NFAState nfaState : next.get(c)){
+//				result.append(this.num + " --" + c + "--> " + nfaState.num + " || ");
+//			}
+//		}
+//		return result.toString();
 	  }
 	
 	/** Getters and Setters **/

@@ -70,7 +70,8 @@ public class NFABuilder {
 	//TODO: Complete this to reuse kleeneStar -> Implement Deep copy of an NFA
 	/* Kleene Closure */
 	public static final NFA kleenePlus(NFA nfa) throws CloneNotSupportedException {
-		return concat(nfa, kleeneStar((NFA) nfa.clone()));
+		NFA clonnedNFA = (NFA) nfa.clone();
+		return concat(nfa, kleeneStar(clonnedNFA));
     }
 	
 	/* String */
