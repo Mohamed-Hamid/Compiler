@@ -28,11 +28,12 @@ public class InfixEvaluator {
 			while (line != null) {
 				// Read line, separate on four cases { , [ , expression, definition
 				if (line.charAt(0) == '{') {
-					for (String token : line.substring(1, line.length() - 1).trim().split(" ")) {
-						// System.out.println("==="+ token+"===");
-						// CHANGE: NFA concatenation of chars
-						expressions.put(token, NFABuilder.s(token)); // CHANGE: call string NFA
+					String lineWithoutBrackets =  line.substring(1, line.length() - 1).trim();
+					for (String token : lineWithoutBrackets.split(" ")) {
+						NFA stringNFA = NFABuilder.s(token);
+						expressions.put(token, stringNFA);
 						symbolTable.put(token, token.toUpperCase());
+						stringNFA.getOutputState().setAcceptingString(token);
 					}
 				} else if (line.charAt(0) == '[') {
 					for (int i = 1; i < line.length() - 1; i++) {
@@ -135,9 +136,12 @@ public class InfixEvaluator {
 
 					if (isDefinition) {
 						definitions.put(LHSName, resultNFA);
+						
 					} else {
 						symbolTable.put(LHSName, LHSName.toUpperCase());
 						expressions.put(LHSName, resultNFA);
+						System.out.println(LHSName);
+						System.out.println(resultNFA.getOutputState());
 					}
 				}
 				line = br.readLine();

@@ -9,6 +9,7 @@ public class DFAState {
 
 	private static int count = 1;
 	private int num;
+	private String acceptingString = "";
 	public HashMap<Character, DFAState> next;
 
 	public DFAState() {
@@ -32,7 +33,7 @@ public class DFAState {
 			DFAState currentDFAState = toExpandState.poll();
 
 			epsilonTransitions = DFAStateSet.get(currentDFAState);
-
+			currentDFAState.checkAcceptance(epsilonTransitions);
 			HashMap<Character, HashSet<NFAState>> DFANext = new HashMap<Character, HashSet<NFAState>>();
 			for (NFAState state : epsilonTransitions) { // Each state in current DFA states
 				for (Character nextEdge : state.next.keySet()) { // Each input for each state
@@ -83,14 +84,18 @@ public class DFAState {
 		return epsilonTransitions;
 	}
 
-	public static void print(DFAState state) {
+	public void print() {
 		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
-		toExpandState.add(state);
+		toExpandState.add(this);
 
 		while (!toExpandState.isEmpty()) {
 			DFAState currentState = toExpandState.poll();
 			System.out.print("Num: " + currentState.num + " ");
 			System.out.println(currentState.next);
+			String stateAcceptingString = currentState.getAcceptingString();
+			if (stateAcceptingString.length() != 0) {
+				System.out.println(" accepting: " + stateAcceptingString);
+			}
 			for (Character c : currentState.next.keySet()) {
 				toExpandState.add(currentState.next.get(c));
 			}
@@ -98,8 +103,26 @@ public class DFAState {
 		}
 	}
 
+	private String checkAcceptance(HashSet<NFAState> transitions) {
+		for (NFAState state : transitions) {
+			String NFAStateAcceptingString = state.getAcceptingString();
+			if (NFAStateAcceptingString.length() != 0) {
+				this.setAcceptingString(NFAStateAcceptingString);
+			}
+		}
+		return "";
+	}
+
 	@Override
 	public String toString() {
 		return num + "";
+	}
+
+	public String getAcceptingString() {
+		return acceptingString;
+	}
+
+	public void setAcceptingString(String acceptingString) {
+		this.acceptingString = acceptingString;
 	}
 }

@@ -7,6 +7,7 @@ public class NFAState {
 	public static final Character EPSILON = null;
 	private static int count = 1;
 	private int num;
+	private String acceptingString = "";
 	private boolean last;
 	public HashMap<Character, HashSet<NFAState>> next;
 	
@@ -51,6 +52,14 @@ public class NFAState {
 
 	public void setLast(boolean last) {
 		this.last = last;
+	}
+
+	public String getAcceptingString() {
+		return acceptingString;
+	}
+
+	public void setAcceptingString(String acceptingString) {
+		this.acceptingString = acceptingString;
 	}
 
 }

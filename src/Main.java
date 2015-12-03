@@ -10,6 +10,6 @@ public class Main {
 				: "/home/hamid/Desktop/rules.txt";
 		NFA rulesNFA = InfixEvaluator.getRulesNFA(filePath);
 		DFAState DFAInitialState = DFAState.generateDFA(rulesNFA);
-		DFAState.print(DFAInitialState);
+		DFAInitialState.print();
 	}
 }
