@@ -175,9 +175,8 @@ public class DFAState {
 				System.out.println(" accepting: " + stateAcceptingString);
 			}
 			for (Character c : currentState.next.keySet()) {
-				
-				if (!visitedStatesNum.contains(currentState.next.get(c).num)) {
-					DFAState nextStateOnC = currentState.next.get(c);
+				DFAState nextStateOnC = currentState.next.get(c);
+				if (!visitedStatesNum.contains(nextStateOnC.num)) {
 					toExpandState.add(nextStateOnC);
 					visitedStatesNum.add(nextStateOnC.num);
 				}
@@ -199,8 +198,8 @@ public class DFAState {
 			}
 		}
 	}
-	
-	public boolean accepting(){
+
+	public boolean accepting() {
 		return acceptingString == "" ? false : true;
 	}
 
@@ -251,6 +250,7 @@ public class DFAState {
 					minimizationsMap.put(stateSetNum, newSet);
 				}
 			} else {
+				currentState.minimizationSetNum = 0;
 				if (minimizationsMap.containsKey(0)) {
 					minimizationsMap.get(0).add(currentState);
 				} else {
@@ -286,7 +286,7 @@ public class DFAState {
 							DFAState newSetState = newSet.iterator().next(); // picks any element from newly created set
 							if (newSetState.isEquivalent(sameSetState)) {
 								newSet.add(sameSetState);
-//								break;
+								break;
 							} else {
 								HashSet<DFAState> differentSet = new HashSet<DFAState>();
 								differentSet.add(sameSetState);
