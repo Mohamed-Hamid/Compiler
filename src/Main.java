@@ -1,6 +1,3 @@
-import java.util.HashMap;
-
-import sharedResources.SymbolTableEntry;
 import lexicalAnalyzer.*;
 import inputParser.*;
 
@@ -15,7 +12,8 @@ public class Main {
 		DFAState DFAInitialState = DFAState.generateDFA(rulesNFAInitialState);
 //		DFAInitialState.print();
 		System.out.println("\n\t\t** DFA Simulation **");
-		DFASimulator dfaSimulator = new DFASimulator("/home/hamid/Desktop/text_program.txt", DFAInitialState, InfixEvaluator.getTokenNames());
+		DFAState DFAInitialStateMinimized = DFAState.minimizeDFA(DFAInitialState);
+		DFASimulator dfaSimulator = new DFASimulator("/home/hamid/Desktop/text_program.txt", DFAInitialStateMinimized, InfixEvaluator.getTokenNames());
 		dfaSimulator.simulate();
 	}
 }
