@@ -23,9 +23,11 @@ public class InfixEvaluator {
 		// First path:
 		// System.out.println(nfa.getInputState().next.get(null).get(0).next.get('A').get(0).next.get(null).get(1).next.get(null).get(0).next);
 		symbolTable = new HashMap<String, String>();
+		int lineNumber = 0;
 		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 			String line = br.readLine();
 			while (line != null) {
+				lineNumber++;
 				// Read line, separate on four cases { , [ , expression, definition
 				if (line.charAt(0) == '{') {
 					String lineWithoutBrackets = line.substring(1, line.length() - 1).trim();
@@ -33,7 +35,7 @@ public class InfixEvaluator {
 						NFA stringNFA = NFABuilder.s(token);
 						expressions.put(token, stringNFA);
 						symbolTable.put(token, token.toUpperCase());
-						stringNFA.getOutputState().setAcceptingString(token);
+						stringNFA.getOutputState().setAcceptingString(lineNumber + " " + token);
 					}
 				} else if (line.charAt(0) == '[') {
 					for (int i = 1; i < line.length() - 1; i++) {
@@ -42,7 +44,7 @@ public class InfixEvaluator {
 							NFA punctuationNFA = NFABuilder.c(parsedChar);
 							symbolTable.put(parsedChar + "", parsedChar + "_PUNCT");
 							expressions.put(parsedChar + "", punctuationNFA);
-							punctuationNFA.getOutputState().setAcceptingString(parsedChar + "");
+							punctuationNFA.getOutputState().setAcceptingString(lineNumber + " " + parsedChar);
 						}
 					}
 				} else { // Expressions OR Definitions
@@ -141,7 +143,7 @@ public class InfixEvaluator {
 					} else {
 						symbolTable.put(LHSName, LHSName.toUpperCase());
 						expressions.put(LHSName, resultNFA);
-						resultNFA.getOutputState().setAcceptingString(LHSName);
+						resultNFA.getOutputState().setAcceptingString(lineNumber + " " + LHSName);
 					}
 				}
 				line = br.readLine();

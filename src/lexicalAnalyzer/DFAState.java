@@ -88,7 +88,7 @@ public class DFAState {
 						break;
 					}
 				}
-				
+
 				// Check to see that the transitions are not found in a previous COLUMN in the table
 				if (!existingFlag) {
 					for (HashSet<NFAState> existingInNewTransition : newStates.values()) {
@@ -108,7 +108,7 @@ public class DFAState {
 						}
 					}
 				}
-				
+
 				if (!existingFlag) {
 					DFAState newDFAState = new DFAState();
 					currentDFAState.next.put(nextEdge, newDFAState);
@@ -181,14 +181,19 @@ public class DFAState {
 		}
 	}
 
-	private String checkAcceptance(HashSet<NFAState> transitions) {
+	private void checkAcceptance(HashSet<NFAState> transitions) {
+		int lineNumberMin = Integer.MAX_VALUE;
 		for (NFAState state : transitions) {
 			String NFAStateAcceptingString = state.getAcceptingString();
 			if (NFAStateAcceptingString.length() != 0) {
-				this.setAcceptingString(NFAStateAcceptingString);
+				int NFALineNumber = Integer.parseInt(NFAStateAcceptingString.split(" ")[0]);
+				String NFAStateAcceptingStringValue = NFAStateAcceptingString.split(" ")[1];
+				if( NFALineNumber < lineNumberMin ){
+					lineNumberMin = NFALineNumber;
+					this.setAcceptingString(NFAStateAcceptingStringValue);
+				}
 			}
 		}
-		return "";
 	}
 
 	@Override
