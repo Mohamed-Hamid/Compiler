@@ -39,6 +39,7 @@ public class DFASimulator {
               i3 = i2;
               accept = true;
               acceptingDFAState = dfaState;
+              dfaState = this.inputState;
             }
             i2++;
           }
