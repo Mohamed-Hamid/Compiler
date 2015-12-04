@@ -10,7 +10,7 @@ import java.util.Stack;
 import lexicalAnalyzer.*;
 
 public class InfixEvaluator {
-	private static HashMap<String, String> symbolTable;
+	private static HashMap<String, String> tokeNames;
 	private static Stack<NFA> operands;
 	private static Stack<Character> operators;
 	private static Character[] seps = { ' ', '-', '|', '+', '*', '(', ')' };
@@ -22,7 +22,7 @@ public class InfixEvaluator {
 		// NFA nfa = NFABuilder.concat(NFABuilder.or(NFABuilder.kleeneStar(NFABuilder.c('A')), NFABuilder.c('B')), NFABuilder.c('M'));
 		// First path:
 		// System.out.println(nfa.getInputState().next.get(null).get(0).next.get('A').get(0).next.get(null).get(1).next.get(null).get(0).next);
-		symbolTable = new HashMap<String, String>();
+		tokeNames = new HashMap<String, String>();
 		int lineNumber = 0;
 		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 			String line = br.readLine();
@@ -34,7 +34,7 @@ public class InfixEvaluator {
 					for (String token : lineWithoutBrackets.split(" ")) {
 						NFA stringNFA = NFABuilder.s(token);
 						expressions.put(token, stringNFA);
-						symbolTable.put(token, token.toUpperCase());
+						tokeNames.put(token, token.toUpperCase());
 						stringNFA.getOutputState().setAcceptingString(0 + " " + token);
 					}
 				} else if (line.charAt(0) == '[') {
@@ -42,7 +42,7 @@ public class InfixEvaluator {
 						char parsedChar = line.charAt(i);
 						if (parsedChar != '\\' && parsedChar != ' ') {
 							NFA punctuationNFA = NFABuilder.c(parsedChar);
-							symbolTable.put(parsedChar + "", parsedChar + "_PUNCT");
+							tokeNames.put(parsedChar + "", parsedChar + "_PUNCT");
 							expressions.put(parsedChar + "", punctuationNFA);
 							punctuationNFA.getOutputState().setAcceptingString(0 + " " + parsedChar);
 						}
@@ -141,7 +141,7 @@ public class InfixEvaluator {
 					if (isDefinition) {
 						definitions.put(LHSName, resultNFA);
 					} else {
-						symbolTable.put(LHSName, LHSName.toUpperCase());
+						tokeNames.put(LHSName, LHSName.toUpperCase());
 						expressions.put(LHSName, resultNFA);
 						resultNFA.getOutputState().setAcceptingString(lineNumber + " " + LHSName);
 					}
@@ -152,6 +152,7 @@ public class InfixEvaluator {
 			// Combine each line's NFA in a single NFA
 			// NFA resultantNFA = NFABuilder.or(expressions.values().toArray());
 			NFAState resultantNFAInitialState = NFABuilder.combine(expressions.values().toArray());
+
 			return resultantNFAInitialState;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -297,13 +298,9 @@ public class InfixEvaluator {
 		}
 		return lineTokens;
 	}
-
-	// private static NFA combineNFAs() {
-	// NFABuilder.or(expressions.values());
-	// for (String name : expressions.keySet()) {
-	// // resultNFA = NFAor(resultNFA, expressions.get(name)); // CHANGE
-	// }
-	// /*return resultNFA;*/
-	// return null;
-	// }
+	
+	public static HashMap<String, String> getTokenNames() {
+		return tokeNames;
+	}
+	
 }
