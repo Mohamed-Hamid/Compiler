@@ -8,9 +8,15 @@ import java.util.Queue;
 public class DFAState {
 
 	private static int count = 1;
+
 	private int num;
 	private String acceptingString = "";
 	public HashMap<Character, DFAState> next;
+	private static HashMap<DFAState, HashSet<NFAState>> DFAStateSet = new HashMap<DFAState, HashSet<NFAState>>();
+
+	private static int differentAcceptingCounts = 0;
+	private int minimizationSetNum = -1;
+	private static HashMap<String, Integer> acceptingStringNum = new HashMap<String, Integer>();
 
 	public DFAState() {
 		this.next = new HashMap<Character, DFAState>();
@@ -21,8 +27,6 @@ public class DFAState {
 		DFAState DFAInitialState = new DFAState();
 		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
 		toExpandState.add(DFAInitialState);
-
-		HashMap<DFAState, HashSet<NFAState>> DFAStateSet = new HashMap<DFAState, HashSet<NFAState>>();
 
 		HashSet<NFAState> epsilonTransitions = new HashSet<NFAState>();
 		epsilonTransitions.addAll(getEpsilonTransitions(rulesNFAInitialState));
@@ -206,10 +210,18 @@ public class DFAState {
 
 	public void setAcceptingString(String acceptingString) {
 		this.acceptingString = acceptingString;
+		if (acceptingStringNum.containsKey(acceptingString)) {
+			this.minimizationSetNum = acceptingStringNum.get(acceptingString);
+		} else {
+			differentAcceptingCounts++;
+			this.minimizationSetNum = differentAcceptingCounts;
+			acceptingStringNum.put(acceptingString, differentAcceptingCounts);
+		}
+
 	}
 
 	public static DFAState minimizeDFA(DFAState DFAInitialState) {
-		HashMap<String, HashSet<DFAState>> minimizationsMap = new HashMap<String, HashSet<DFAState>>();
+		HashMap<Integer, HashSet<DFAState>> minimizationsMap = new HashMap<Integer, HashSet<DFAState>>();
 
 		// Divide states in accepting and non-accepting sets, and accepting states of different accepting strings have different sets
 		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
@@ -218,30 +230,28 @@ public class DFAState {
 		HashSet<Integer> visitedStatesNum = new HashSet<Integer>();
 		visitedStatesNum.add(DFAInitialState.num);
 
+		// int nCount = 1;
+
 		while (!toExpandState.isEmpty()) {
-			boolean addedFlag = false;
+
 			DFAState currentState = toExpandState.poll();
 			String stateAcceptingString = currentState.getAcceptingString();
+			Integer stateSetNum = currentState.minimizationSetNum;
 			if (stateAcceptingString.length() != 0) {
-				for (String str : minimizationsMap.keySet()) {
-					if(str.equals(stateAcceptingString)) {
-						minimizationsMap.get(str).add(currentState);
-						addedFlag = true;
-						break;
-					}
-				}
-				if( !addedFlag ) {
-					HashSet<DFAState> newSet = new HashSet<DFAState>();
-					newSet.add(currentState);
-					minimizationsMap.put(stateAcceptingString, newSet);
-				}
-			} else {
-				if(minimizationsMap.containsKey(" ")) {
-					minimizationsMap.get(" ").add(currentState);
+				if (minimizationsMap.containsKey(stateSetNum)) {
+					minimizationsMap.get(stateSetNum).add(currentState);
 				} else {
 					HashSet<DFAState> newSet = new HashSet<DFAState>();
 					newSet.add(currentState);
-					minimizationsMap.put(" ", newSet);
+					minimizationsMap.put(stateSetNum, newSet);
+				}
+			} else {
+				if (minimizationsMap.containsKey(0)) {
+					minimizationsMap.get(0).add(currentState);
+				} else {
+					HashSet<DFAState> newSet = new HashSet<DFAState>();
+					newSet.add(currentState);
+					minimizationsMap.put(0, newSet);
 				}
 			}
 			for (Character c : currentState.next.keySet()) {
@@ -256,4 +266,5 @@ public class DFAState {
 
 		return null;
 	}
+
 }

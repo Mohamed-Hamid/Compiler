@@ -1,3 +1,4 @@
 letter = A
 digit = 0
 id: letter (letter|digit)
+id2: c | a
