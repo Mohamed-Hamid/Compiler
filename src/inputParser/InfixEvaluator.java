@@ -35,7 +35,7 @@ public class InfixEvaluator {
 						NFA stringNFA = NFABuilder.s(token);
 						expressions.put(token, stringNFA);
 						symbolTable.put(token, token.toUpperCase());
-						stringNFA.getOutputState().setAcceptingString(lineNumber + " " + token);
+						stringNFA.getOutputState().setAcceptingString(0 + " " + token);
 					}
 				} else if (line.charAt(0) == '[') {
 					for (int i = 1; i < line.length() - 1; i++) {
@@ -44,7 +44,7 @@ public class InfixEvaluator {
 							NFA punctuationNFA = NFABuilder.c(parsedChar);
 							symbolTable.put(parsedChar + "", parsedChar + "_PUNCT");
 							expressions.put(parsedChar + "", punctuationNFA);
-							punctuationNFA.getOutputState().setAcceptingString(lineNumber + " " + parsedChar);
+							punctuationNFA.getOutputState().setAcceptingString(0 + " " + parsedChar);
 						}
 					}
 				} else { // Expressions OR Definitions
