@@ -10,7 +10,10 @@ public class Main {
 				: "/home/hamid/Desktop/rules.txt";
 		NFAState rulesNFAInitialState = InfixEvaluator.getRulesNFA(filePath);
 		DFAState DFAInitialState = DFAState.generateDFA(rulesNFAInitialState);
-		DFAInitialState.print();
+//		DFAInitialState.print();
+		System.out.println("****");
+		DFASimulator dfaSimulator = new DFASimulator("/home/hamid/Desktop/text_program.txt", DFAInitialState);
+		dfaSimulator.simulate();
 		
 		// A+B | C*
 //		NFA nfa = NFABuilder.or((NFABuilder.concat( NFABuilder.kleenePlus(NFABuilder.c('A')), NFABuilder.c('B'))), (

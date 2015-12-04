@@ -9,7 +9,7 @@ public class DFAState {
 
 	private static int count = 1;
 	private int num;
-	private String acceptingString = "";
+	public String acceptingString = "";
 	public HashMap<Character, DFAState> next;
 
 	public DFAState() {
@@ -111,6 +111,10 @@ public class DFAState {
 			}
 		}
 		return "";
+	}
+	
+	public boolean accepting(){
+		return acceptingString == "" ? false : true;
 	}
 
 	@Override
