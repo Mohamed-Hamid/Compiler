@@ -19,9 +19,6 @@ public class InfixEvaluator {
 	private static HashMap<String, NFA> expressions = new HashMap<String, NFA>();
 
 	public static NFAState getRulesNFA(String filePath) throws Exception {
-		// NFA nfa = NFABuilder.concat(NFABuilder.or(NFABuilder.kleeneStar(NFABuilder.c('A')), NFABuilder.c('B')), NFABuilder.c('M'));
-		// First path:
-		// System.out.println(nfa.getInputState().next.get(null).get(0).next.get('A').get(0).next.get(null).get(1).next.get(null).get(0).next);
 		tokeNames = new HashMap<String, String>();
 		int lineNumber = 0;
 		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -57,7 +54,6 @@ public class InfixEvaluator {
 					}
 					if (isDefinition) {
 						LHSName = line.substring(0, line.indexOf('=')).trim();
-						// System.out.println(line.substring(0, line.indexOf('=')).trim() + "=");
 						line = line.substring(line.indexOf('=') + 1);
 					} else {
 						LHSName = line.substring(0, line.indexOf(':')).trim();
@@ -84,16 +80,11 @@ public class InfixEvaluator {
 								i++;
 
 								char index = begin;
-								// CHANGE: NFA tempNFA = NFA(begin.toString());
-								/* NFA tempNFA = new NFA(); */
 								ArrayList<Character> rangeChars = new ArrayList<>();
 								while (index <= end) {
-									// CHANGE: NFA indexNFA = NFA(index.toString());
-									// tempNFA = NFAor(tempNFA, indexNFA);
 									rangeChars.add(index);
 									index = (char) (index + 1);
 								}
-								System.out.println(" * " + rangeChars + " * ");
 								NFA tempNFA = NFABuilder.or(rangeChars.toArray());
 								operands.pop(); // remove the first character of the range operator from stack
 								operands.push(tempNFA);
@@ -107,15 +98,12 @@ public class InfixEvaluator {
 								// Check for concatenation after + * )
 								if (operator == '+' || operator == '*' || operator == ')') {
 									if (!isOperator(nextToken) || nextToken.equals("(")) {
-										// System.out.println("CONCAT case [+*)].operand OR ).(: " + nextToken);
 										parseOperator('.');
 									}
 								}
 							}
 
-							// System.out.println("or: " + token);
 						} else { // operand
-							// System.out.println("od: " + token);
 							NFA operandNFA = getOperandNFA(token);
 							operands.push(operandNFA);
 
@@ -123,10 +111,8 @@ public class InfixEvaluator {
 							if (i + 1 < lineTokens.size()) {
 								String nextToken = lineTokens.get(i + 1);
 								if (!isOperator(nextToken)) {
-									// System.out.println("CONCAT case operand.operand: " + nextToken);
 									parseOperator('.');
 								} else if (nextToken.equals("(")) {
-									// System.out.println("CONCAT case operand.(: " + nextToken);
 									parseOperator('.');
 								}
 							}
@@ -135,9 +121,7 @@ public class InfixEvaluator {
 
 					// empty the operators stack
 					executeStack();
-
 					NFA resultNFA = operands.pop();
-
 					if (isDefinition) {
 						definitions.put(LHSName, resultNFA);
 					} else {
@@ -155,7 +139,6 @@ public class InfixEvaluator {
 
 			return resultantNFAInitialState;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -231,9 +214,7 @@ public class InfixEvaluator {
 			} else {
 				resultNFA = generateNFA(poppedOperator, secondOperandNFA, null);
 			}
-
 			operands.push(resultNFA);
-
 			poppedOperator = operators.pop();
 		}
 	}
@@ -241,23 +222,19 @@ public class InfixEvaluator {
 	private static NFA generateNFA(Character operator, NFA operand1, NFA operand2) {
 		NFA resultantNFA = null;
 		switch (operator) {
-		// CHANGE:
 		case '.':
 			resultantNFA = NFABuilder.concat(operand1, operand2);
 			break;
 		case '|':
-			// NFAor(operands1, operand2);
 			resultantNFA = NFABuilder.or(operand1, operand2);
 			break;
 		case '*':
-			// NFAkleene(operands1, operand2);
 			resultantNFA = NFABuilder.kleeneStar(operand1);
 			break;
 		case '+':
 			try {
 				resultantNFA = NFABuilder.kleenePlus(operand1);
 			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;
@@ -291,7 +268,6 @@ public class InfixEvaluator {
 				char prevChar = i1 > 0 ? line.charAt(i1 - 1) : ' ';
 				if ((separators.contains(nextChar) && currentChar != '\\') || (separators.contains(currentChar) && prevChar != '\\')) {
 					lineTokens.add(tempChars.toString());
-					// System.out.println(tempChars);
 					tempChars = new StringBuilder();
 				}
 			}
