@@ -175,8 +175,9 @@ public class DFAState {
 				System.out.println(" accepting: " + stateAcceptingString);
 			}
 			for (Character c : currentState.next.keySet()) {
-				DFAState nextStateOnC = currentState.next.get(c);
-				if (!visitedStatesNum.contains(nextStateOnC.num)) {
+				
+				if (!visitedStatesNum.contains(currentState.next.get(c).num)) {
+					DFAState nextStateOnC = currentState.next.get(c);
 					toExpandState.add(nextStateOnC);
 					visitedStatesNum.add(nextStateOnC.num);
 				}
@@ -285,6 +286,7 @@ public class DFAState {
 							DFAState newSetState = newSet.iterator().next(); // picks any element from newly created set
 							if (newSetState.isEquivalent(sameSetState)) {
 								newSet.add(sameSetState);
+//								break;
 							} else {
 								HashSet<DFAState> differentSet = new HashSet<DFAState>();
 								differentSet.add(sameSetState);

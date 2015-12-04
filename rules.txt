@@ -1,3 +1,3 @@
-letter = A
-digit = 0
-id: letter (letter|digit)
+letter = a-b
+digit = 1
+id: letter (digit|letter)

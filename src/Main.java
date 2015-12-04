@@ -11,8 +11,8 @@ public class Main {
 		NFAState rulesNFAInitialState = InfixEvaluator.getRulesNFA(filePath);
 		
 		DFAState DFAInitialState = DFAState.generateDFA(rulesNFAInitialState);
-		DFAInitialState.print();
-		System.out.println("**************");
+//		DFAInitialState.print();
+//		System.out.println("**************");
 		
 		DFAState DFAInitialStateMinimized = DFAState.minimizeDFA(DFAInitialState);
 		DFAInitialStateMinimized.print();
