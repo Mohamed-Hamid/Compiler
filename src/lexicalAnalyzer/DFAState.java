@@ -387,4 +387,29 @@ public class DFAState {
 		}
 		return count;
 	}
+
+	public void printTable() {
+		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
+		toExpandState.add(this);
+
+		HashSet<Integer> visitedStatesNum = new HashSet<Integer>();
+		visitedStatesNum.add(this.num);
+		while (!toExpandState.isEmpty()) {
+			DFAState currentState = toExpandState.poll();
+			System.out.print("State: " + currentState.num + " | ");
+			for (Character c : currentState.next.keySet()) {
+				DFAState nextStateOnC = currentState.next.get(c);
+				System.out.print(c + ": " + nextStateOnC.num + ", ");
+				if (!visitedStatesNum.contains(nextStateOnC.num)) {
+					toExpandState.add(nextStateOnC);
+					visitedStatesNum.add(nextStateOnC.num);
+				}
+			}
+			String stateAcceptingString = currentState.getAcceptingString();
+			if (stateAcceptingString.length() != 0) {
+				System.out.print(" | Accepting State: " + stateAcceptingString);
+			}
+			System.out.println("");
+		}
+	}
 }

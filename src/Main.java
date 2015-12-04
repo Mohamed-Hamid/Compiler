@@ -26,6 +26,8 @@ public class Main {
 				"C:\\Users\\electric\\Dropbox\\College\\Term 9\\Programming Languages Translation\\Project phase 1\\Compiler\\test_program.txt",
 				DFAInitialStateMinimized);
 		dfaSimulator.simulate();
+		
+		DFAInitialStateMinimized.printTable();
 		// A+B | C*
 		// NFA nfa = NFABuilder.or((NFABuilder.concat( NFABuilder.kleenePlus(NFABuilder.c('A')), NFABuilder.c('B'))), (
 		// NFABuilder.kleeneStar(NFABuilder.c('C')) ) );
