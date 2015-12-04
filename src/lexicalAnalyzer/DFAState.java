@@ -7,7 +7,7 @@ import java.util.Queue;
 
 public class DFAState {
 
-	private static int count = 1;
+	public static int count = 1;
 
 	private int num;
 	public String acceptingString = "";
@@ -281,20 +281,23 @@ public class DFAState {
 						newSet.add(sameSetState);
 						newMinimizationsForOneSet.put(setNum, newSet);
 					} else {
+						HashMap<Integer, HashSet<DFAState>> newMinimizationsForOneSetTemp = new HashMap<Integer, HashSet<DFAState>>();
 						for (Integer currentSetNum : newMinimizationsForOneSet.keySet()) {
 							HashSet<DFAState> newSet = newMinimizationsForOneSet.get(currentSetNum);
 							DFAState newSetState = newSet.iterator().next(); // picks any element from newly created set
 							if (newSetState.isEquivalent(sameSetState)) {
 								newSet.add(sameSetState);
+								sameSetState.minimizationSetNum = newSetState.minimizationSetNum;
 								break;
 							} else {
 								HashSet<DFAState> differentSet = new HashSet<DFAState>();
 								differentSet.add(sameSetState);
 								differentAcceptingCounts++;
 								sameSetState.minimizationSetNum = differentAcceptingCounts;
-								newMinimizationsForOneSet.put(differentAcceptingCounts, differentSet);
+								newMinimizationsForOneSetTemp.put(differentAcceptingCounts, differentSet);
 							}
 						}
+						newMinimizationsForOneSet.putAll(newMinimizationsForOneSetTemp);
 					}
 				}
 				newMinimizationsForAllSet.putAll(newMinimizationsForOneSet);
@@ -361,5 +364,27 @@ public class DFAState {
 		}
 
 		return DFAInitialState;
+	}
+
+	public int getCount() {
+		int count = 1;
+		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
+		toExpandState.add(this);
+
+		HashSet<Integer> visitedStatesNum = new HashSet<Integer>();
+		visitedStatesNum.add(this.num);
+
+		while (!toExpandState.isEmpty()) {
+			DFAState currentState = toExpandState.poll();
+			for (Character c : currentState.next.keySet()) {
+				DFAState nextStateOnC = currentState.next.get(c);
+				if (!visitedStatesNum.contains(nextStateOnC.num)) {
+					toExpandState.add(nextStateOnC);
+					visitedStatesNum.add(nextStateOnC.num);
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 }
