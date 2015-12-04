@@ -1,5 +1,5 @@
-aasd020
-1
-11.2
-=
-==
+int sum , count , pass , mnt;
+while (pass != 10)
+{
+pass = pass + 1 ;
+}
