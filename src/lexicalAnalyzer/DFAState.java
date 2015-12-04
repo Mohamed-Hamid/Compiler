@@ -264,7 +264,61 @@ public class DFAState {
 		}
 		// finished 1st division
 
+		while (true) {
+			HashMap<Integer, HashSet<DFAState>> newMinimizationsForAllSet = new HashMap<Integer, HashSet<DFAState>>();
+			// Split
+			for (Integer setNum : minimizationsMap.keySet()) {
+				HashSet<DFAState> currentSet = minimizationsMap.get(setNum);
+				HashMap<Integer, HashSet<DFAState>> newMinimizationsForOneSet = new HashMap<Integer, HashSet<DFAState>>();
+				for (DFAState sameSetState : currentSet) {
+					if (newMinimizationsForOneSet.size() == 0) {
+						HashSet<DFAState> newSet = new HashSet<DFAState>();
+						newSet.add(sameSetState);
+						newMinimizationsForOneSet.put(setNum, newSet);
+					} else {
+						for (Integer currentSetNum : newMinimizationsForOneSet.keySet()) {
+							HashSet<DFAState> newSet = newMinimizationsForOneSet.get(currentSetNum);
+							DFAState newSetState = newSet.iterator().next(); // picks any element from newly created set
+							if (newSetState.isEquivalent(sameSetState)) {
+								newSet.add(sameSetState);
+							} else {
+								HashSet<DFAState> differentSet = new HashSet<DFAState>();
+								differentSet.add(sameSetState);
+								differentAcceptingCounts++;
+								sameSetState.minimizationSetNum = differentAcceptingCounts;
+								newMinimizationsForOneSet.put(differentAcceptingCounts, differentSet);
+							}
+						}
+					}
+				}
+				newMinimizationsForAllSet.putAll(newMinimizationsForOneSet);
+			}
+
+			// if next step splits count is equal to current split counts, this means we cannot split more
+			if (newMinimizationsForAllSet.size() == minimizationsMap.size()) {
+				break;
+			} else {
+				minimizationsMap = new HashMap<Integer, HashSet<DFAState>>();
+				minimizationsMap.putAll(newMinimizationsForAllSet);
+			}
+		}
 		return null;
 	}
 
+	private boolean isEquivalent(DFAState secondState) {
+		HashMap<Character, DFAState> secondStateNext = secondState.next;
+		if (secondStateNext.size() != this.next.size()) {
+			return false;
+		}
+		boolean allInputsSameState = true;
+		for (Character edge : secondStateNext.keySet()) {
+			DFAState thisStateNextState = this.next.get(edge);
+			DFAState secondStateNextState = secondStateNext.get(edge);
+			if (thisStateNextState.minimizationSetNum != secondStateNextState.minimizationSetNum) {
+				allInputsSameState = false;
+				break;
+			}
+		}
+		return allInputsSameState;
+	}
 }
