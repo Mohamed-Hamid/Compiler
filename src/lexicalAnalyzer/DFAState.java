@@ -333,7 +333,7 @@ public class DFAState {
 		for (Character edge : secondStateNext.keySet()) {
 			DFAState thisStateNextState = this.next.get(edge);
 			DFAState secondStateNextState = secondStateNext.get(edge);
-			if (thisStateNextState.minimizationSetNum != secondStateNextState.minimizationSetNum) {
+			if (thisStateNextState == null || thisStateNextState.minimizationSetNum != secondStateNextState.minimizationSetNum) {
 				allInputsSameState = false;
 				break;
 			}
