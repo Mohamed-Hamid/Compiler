@@ -66,30 +66,60 @@ public class DFAState {
 			}
 
 			// check on DFANext if any hashset value is contained in DFAStateSet
-
+			HashMap<DFAState, HashSet<NFAState>> newStates = new HashMap<DFAState, HashSet<NFAState>>();
+			// Using this variable because we cannot add directly to DFAStateSet inside its loop due to java exception
 			for (Character nextEdge : DFANext.keySet()) {
+				boolean existingFlag = false;
 				HashSet<NFAState> newTransition = DFANext.get(nextEdge);
+				// Check to see that the transitions are not found in a previous ROW in the table
 				for (HashSet<NFAState> existingTransition : DFAStateSet.values()) {
 					if (areEquivalent(newTransition, existingTransition)) {
 						DFAState existingState = null;
 						for (DFAState state : DFAStateSet.keySet()) {
 							if (DFAStateSet.get(state).equals(existingTransition)) {
 								existingState = state;
+								existingFlag = true;
 								break;
 							}
 						}
 						if (existingState == null)
-							throw new Exception("Bug");
+							throw new Exception("Bug1");
 						currentDFAState.next.put(nextEdge, existingState);
 						break;
-					} else {
-						DFAState newDFAState = new DFAState();
-						currentDFAState.next.put(nextEdge, newDFAState);
-						DFAStateSet.put(newDFAState, newTransition);
-						toExpandState.add(newDFAState);
 					}
 				}
+				
+				// Check to see that the transitions are not found in a previous COLUMN in the table
+				if (!existingFlag) {
+					for (HashSet<NFAState> existingInNewTransition : newStates.values()) {
+						if (areEquivalent(newTransition, existingInNewTransition)) {
+							DFAState existingStateInNew = null;
+							for (DFAState state : newStates.keySet()) {
+								if (newStates.get(state).equals(existingInNewTransition)) {
+									existingStateInNew = state;
+									existingFlag = true;
+									break;
+								}
+							}
+							if (existingStateInNew == null)
+								throw new Exception("Bug2");
+							currentDFAState.next.put(nextEdge, existingStateInNew);
+							break;
+						}
+					}
+				}
+				
+				if (!existingFlag) {
+					DFAState newDFAState = new DFAState();
+					currentDFAState.next.put(nextEdge, newDFAState);
+					newStates.put(newDFAState, newTransition);
+					toExpandState.add(newDFAState);
+				}
 			}
+			for (DFAState s : newStates.keySet()) {
+				DFAStateSet.put(s, newStates.get(s));
+			}
+
 		}
 
 		return DFAInitialState;
@@ -129,6 +159,9 @@ public class DFAState {
 		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
 		toExpandState.add(this);
 
+		HashSet<Integer> visitedStatesNum = new HashSet<Integer>();
+		visitedStatesNum.add(this.num);
+
 		while (!toExpandState.isEmpty()) {
 			DFAState currentState = toExpandState.poll();
 			System.out.print("Num: " + currentState.num + " ");
@@ -138,7 +171,11 @@ public class DFAState {
 				System.out.println(" accepting: " + stateAcceptingString);
 			}
 			for (Character c : currentState.next.keySet()) {
-				toExpandState.add(currentState.next.get(c));
+				DFAState nextStateOnC = currentState.next.get(c);
+				if (!visitedStatesNum.contains(nextStateOnC.num)) {
+					toExpandState.add(nextStateOnC);
+					visitedStatesNum.add(nextStateOnC.num);
+				}
 			}
 
 		}
