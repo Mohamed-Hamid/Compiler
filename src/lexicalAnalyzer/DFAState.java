@@ -177,7 +177,6 @@ public class DFAState {
 					visitedStatesNum.add(nextStateOnC.num);
 				}
 			}
-
 		}
 	}
 
@@ -188,7 +187,7 @@ public class DFAState {
 			if (NFAStateAcceptingString.length() != 0) {
 				int NFALineNumber = Integer.parseInt(NFAStateAcceptingString.split(" ")[0]);
 				String NFAStateAcceptingStringValue = NFAStateAcceptingString.split(" ")[1];
-				if( NFALineNumber < lineNumberMin ){
+				if (NFALineNumber < lineNumberMin) {
 					lineNumberMin = NFALineNumber;
 					this.setAcceptingString(NFAStateAcceptingStringValue);
 				}
@@ -207,5 +206,54 @@ public class DFAState {
 
 	public void setAcceptingString(String acceptingString) {
 		this.acceptingString = acceptingString;
+	}
+
+	public static DFAState minimizeDFA(DFAState DFAInitialState) {
+		HashMap<String, HashSet<DFAState>> minimizationsMap = new HashMap<String, HashSet<DFAState>>();
+
+		// Divide states in accepting and non-accepting sets, and accepting states of different accepting strings have different sets
+		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
+		toExpandState.add(DFAInitialState);
+
+		HashSet<Integer> visitedStatesNum = new HashSet<Integer>();
+		visitedStatesNum.add(DFAInitialState.num);
+
+		while (!toExpandState.isEmpty()) {
+			boolean addedFlag = false;
+			DFAState currentState = toExpandState.poll();
+			String stateAcceptingString = currentState.getAcceptingString();
+			if (stateAcceptingString.length() != 0) {
+				for (String str : minimizationsMap.keySet()) {
+					if(str.equals(stateAcceptingString)) {
+						minimizationsMap.get(str).add(currentState);
+						addedFlag = true;
+						break;
+					}
+				}
+				if( !addedFlag ) {
+					HashSet<DFAState> newSet = new HashSet<DFAState>();
+					newSet.add(currentState);
+					minimizationsMap.put(stateAcceptingString, newSet);
+				}
+			} else {
+				if(minimizationsMap.containsKey(" ")) {
+					minimizationsMap.get(" ").add(currentState);
+				} else {
+					HashSet<DFAState> newSet = new HashSet<DFAState>();
+					newSet.add(currentState);
+					minimizationsMap.put(" ", newSet);
+				}
+			}
+			for (Character c : currentState.next.keySet()) {
+				DFAState nextStateOnC = currentState.next.get(c);
+				if (!visitedStatesNum.contains(nextStateOnC.num)) {
+					toExpandState.add(nextStateOnC);
+					visitedStatesNum.add(nextStateOnC.num);
+				}
+			}
+		}
+		// finished 1st division
+
+		return null;
 	}
 }
