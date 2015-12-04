@@ -27,7 +27,7 @@ public class Main {
 				DFAInitialStateMinimized);
 		dfaSimulator.simulate();
 		
-		DFAInitialStateMinimized.printTable();
+//		DFAInitialStateMinimized.printTable();
 		// A+B | C*
 		// NFA nfa = NFABuilder.or((NFABuilder.concat( NFABuilder.kleenePlus(NFABuilder.c('A')), NFABuilder.c('B'))), (
 		// NFABuilder.kleeneStar(NFABuilder.c('C')) ) );

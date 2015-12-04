@@ -173,10 +173,11 @@ public class InfixEvaluator {
 			return operandNFA;
 		} else {
 			token = token.replace("\\", "");
-			for (Character c : token.toCharArray()) {
+			for (int i = 0; i < token.length(); i++) {
+				Character c = token.charAt(i);
 				operandNFA = NFABuilder.c(c);
 				operands.push(operandNFA);
-				if (c != token.charAt(token.length() - 1)) {
+				if (i != token.length() - 1) {
 					parseOperator('.');
 				}
 			}
