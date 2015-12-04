@@ -18,15 +18,12 @@ public class DFASimulator {
 		try (BufferedReader br = new BufferedReader(new FileReader(testProgramFilePath))) {
 			String line = br.readLine();
 			while (line != null) {
-//				int i3 = -2;
+				System.out.println(line);
 				dfaState = this.inputState;
 				System.out.println(dfaState.accepting());
 				boolean accept = false;
-//				if(dfaState.accepting()){ //trivial accepting state
-//					i3 = -1;
-//				}
 				for (int i1 = 0, i2 = 0, i3 = 0; i2 < line.length();) {
-					while(i2 < line.length() && dfaState.next.containsKey(line.charAt(i2))){
+					while((i2 < line.length() && line.charAt(i2) != ' ') && (dfaState.next.containsKey(line.charAt(i2))) ){
 						dfaState = dfaState.next.get(line.charAt(i2));
 						if(dfaState.accepting()){
 							i3 = i2;
@@ -42,6 +39,7 @@ public class DFASimulator {
 						dfaState = this.inputState;
 						System.out.println(dfaState.acceptingString);
 					} else {
+						i2++;
 						i1 = i2;
 						i3 = i2;
 						continue;
