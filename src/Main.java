@@ -12,8 +12,8 @@ public class Main {
 		DFAState DFAInitialState = DFAState.generateDFA(rulesNFAInitialState);
 //		DFAInitialState.print();
 		System.out.println("****");
-//		DFASimulator dfaSimulator = new DFASimulator("/home/hamid/Desktop/text_program.txt", DFAInitialState);
-//		dfaSimulator.simulate();
+		DFASimulator dfaSimulator = new DFASimulator("/home/hamid/Desktop/text_program.txt", DFAInitialState);
+		dfaSimulator.simulate();
 		
 		// A+B | C*
 //		NFA nfa = NFABuilder.or((NFABuilder.concat( NFABuilder.kleenePlus(NFABuilder.c('A')), NFABuilder.c('B'))), (
