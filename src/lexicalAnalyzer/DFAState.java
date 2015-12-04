@@ -302,7 +302,17 @@ public class DFAState {
 				minimizationsMap.putAll(newMinimizationsForAllSet);
 			}
 		}
-		return null;
+
+		// reduce Map value from set to any state from the set
+		HashMap<Integer, DFAState> minimizationsMapState = new HashMap<Integer, DFAState>();
+		for (Integer i : minimizationsMap.keySet()) {
+			HashSet<DFAState> minimalSet = minimizationsMap.get(i);
+			DFAState DFARepresentative = minimalSet.iterator().next();
+			minimizationsMapState.put(i, DFARepresentative);
+		}
+
+		//
+		return traverseAndRemoveDuplicate(DFAInitialState, minimizationsMapState);
 	}
 
 	private boolean isEquivalent(DFAState secondState) {
@@ -320,5 +330,30 @@ public class DFAState {
 			}
 		}
 		return allInputsSameState;
+	}
+
+	private static DFAState traverseAndRemoveDuplicate(DFAState DFAInitialState, HashMap<Integer, DFAState> minimizationsMap) {
+
+		Queue<DFAState> toExpandState = new LinkedList<DFAState>();
+		toExpandState.add(DFAInitialState);
+
+		HashSet<Integer> visitedStatesNum = new HashSet<Integer>();
+		visitedStatesNum.add(DFAInitialState.num);
+
+		while (!toExpandState.isEmpty()) {
+			DFAState currentState = toExpandState.poll();
+
+			for (Character c : currentState.next.keySet()) {
+				DFAState nextStateOnC = currentState.next.get(c);
+				if (!visitedStatesNum.contains(nextStateOnC.num)) {
+					DFAState newState = minimizationsMap.get(nextStateOnC.minimizationSetNum);
+					currentState.next.put(c, newState);
+					toExpandState.add(nextStateOnC);
+					visitedStatesNum.add(nextStateOnC.num);
+				}
+			}
+		}
+
+		return DFAInitialState;
 	}
 }
