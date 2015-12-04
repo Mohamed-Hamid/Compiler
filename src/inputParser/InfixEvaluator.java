@@ -117,7 +117,9 @@ public class InfixEvaluator {
 						} else { // operand
 							// System.out.println("od: " + token);
 							NFA operandNFA = getOperandNFA(token);
-							operands.push(operandNFA);
+							if (operandNFA != null) {
+								operands.push(operandNFA);
+							}
 
 							// Check for concatenation operator after the operand
 							if (i + 1 < lineTokens.size()) {
@@ -168,11 +170,18 @@ public class InfixEvaluator {
 		NFA operandNFA;
 		if (definitions.containsKey(token)) {
 			operandNFA = (NFA) definitions.get(token).clone();
+			return operandNFA;
 		} else {
 			token = token.replace("\\", "");
-			operandNFA = NFABuilder.s(token);
+			for (Character c : token.toCharArray()) {
+				operandNFA = NFABuilder.c(c);
+				operands.push(operandNFA);
+				if (c != token.charAt(token.length() - 1)) {
+					parseOperator('.');
+				}
+			}
+			return null;
 		}
-		return operandNFA;
 	}
 
 	private static void parseOperator(Character currentOperator) {
