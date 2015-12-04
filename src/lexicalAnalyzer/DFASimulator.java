@@ -38,6 +38,7 @@ public class DFASimulator {
 						accept = false;
 						dfaState = this.inputState;
 					} else {
+						System.out.println("Error");
 						i2++;
 						i1 = i2;
 						i3 = i2;
