@@ -54,7 +54,7 @@ public class DFASimulator {
             accept = false;
             dfaState = this.inputState;
           } else {
-        	if(!accept && (line.charAt(i2) != ' ')){
+        	if(!accept && i2 < line.length() &&(line.charAt(i2) != ' ')){
         		simulationResult.add("Error");
         		System.out.println("Error");
         	}
