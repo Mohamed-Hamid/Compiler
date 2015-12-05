@@ -156,16 +156,22 @@ public class InfixEvaluator {
 			operandNFA = (NFA) definitions.get(token).clone();
 			return operandNFA;
 		} else {
-			token = token.replace("\\", "");
-			for (int i = 0; i < token.length(); i++) {
-				Character c = token.charAt(i);
-				operandNFA = NFABuilder.c(c);
-				operands.push(operandNFA);
-				if (i != token.length() - 1) {
-					parseOperator('.');
+
+			if (token.equals("\\L")) {
+				operandNFA = NFABuilder.e();
+				return operandNFA;
+			} else {
+				token = token.replace("\\", "");
+				for (int i = 0; i < token.length(); i++) {
+					Character c = token.charAt(i);
+					operandNFA = NFABuilder.c(c);
+					operands.push(operandNFA);
+					if (i != token.length() - 1) {
+						parseOperator('.');
+					}
 				}
+				return null;
 			}
-			return null;
 		}
 	}
 
@@ -284,9 +290,9 @@ public class InfixEvaluator {
 		}
 		return lineTokens;
 	}
-	
+
 	public static HashMap<String, String> getTokenNames() {
 		return tokeNames;
 	}
-	
+
 }
