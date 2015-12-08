@@ -225,6 +225,7 @@ public class DFAState {
 	}
 
 	public static DFAState minimizeDFA(DFAState DFAInitialState) {
+		
 		HashMap<Integer, HashSet<DFAState>> minimizationsMap = new HashMap<Integer, HashSet<DFAState>>();
 
 		// Divide states in accepting and non-accepting sets, and accepting states of different accepting strings have different sets

@@ -30,7 +30,8 @@ public class DFASimulator {
 		try (BufferedReader br = new BufferedReader(new FileReader(testProgramFilePath))) {
 			String line = br.readLine();
 			while (line != null) {
-				System.out.println("\n" + line);
+				line = line.trim();
+				// System.out.println("\n" + line);
 				dfaState = this.inputState;
 				boolean accept = false;
 				for (int i1 = 0, i2 = 0, i3 = 0; i2 < line.length();) {
@@ -46,7 +47,8 @@ public class DFASimulator {
 					}
 					if (accept) {
 						simulationResult.add(acceptingDFAStateString);
-						System.out.println(i1 + " " + i2 + " " + i3 + " => \t\t" + acceptingDFAStateString);
+						// System.out.println(i1 + " " + i2 + " " + i3 + " => \t\t" + acceptingDFAStateString);
+						System.out.println(acceptingDFAStateString);
 						String symbol = line.substring(i1, i3 + 1);
 						String token = acceptingDFAStateString;
 						symbolTable.put(symbol, new SymbolTableEntry(tokenNames.get(token)));
@@ -56,8 +58,7 @@ public class DFASimulator {
 						accept = false;
 						dfaState = this.inputState;
 					} else {
-						if (i2 == line.length()  
-								|| (i2 < line.length() && (line.charAt(i2) != ' ')) ) {
+						if (i2 == line.length() || (i2 < line.length() && (line.charAt(i2) != ' '))) {
 							simulationResult.add("Error");
 							System.out.println("Error");
 						}
